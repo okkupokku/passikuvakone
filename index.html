@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Passikuvakone — tee passikuva itse</title>
+<title>Passikuvakone: tee passikuva itse</title>
 <style>
   :root{
     --bordeaux:#3a1c28;
@@ -205,20 +205,35 @@
 <header>
   <div class="crest" aria-hidden="true">⚜</div>
   <h1>Passikuvakone</h1>
-  <p class="sub">Tee puhelimella otetusta kuvasta poliisin mittavaatimukset täyttävä passikuva. Rajaus tehdään automaattisesti — sinä vain arvioit lopputuloksen.</p>
+  <p class="sub">Tee puhelimella otetusta kuvasta poliisin mittavaatimukset täyttävä passikuva. Rajaus tehdään puolestasi, sinun tehtäväksesi jää tarkistaa lopputulos.</p>
   <div class="mrz" aria-hidden="true">P&lt;FIN&lt;&lt;PASSIKUVA&lt;&lt;TYOKALU&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;500X653&lt;JPEG&lt;MAX250KB&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
 </header>
 
 <main>
 
+  <!-- INTRO -->
+  <section class="step" id="intro">
+    <div class="step-tag">Mikä tämä sivu on?</div>
+    <h2>Tee passikuva itse ilman valokuvaamoa</h2>
+    <p class="lead" style="margin-bottom:12px;">Passin tai henkilökortin uusinta kyseessä? Tällä sivulla teet itse otetusta kuvasta (tai tarkemmin ottaen kaverisi ottamasta, sillä selfie ei kelpaa) virallisen passikuvan ja lataat sen poliisin palvelimelle. Tämä korvaa valokuvaajalla käynnin. Sinun tarvitsee vain noudattaa alla olevia ohjeita:</p>
+    <ol class="police" style="margin-bottom:4px;">
+      <li>Ota passikuva ohjeiden mukaisesti (vaihe 1)</li>
+      <li>Lataa kuva Passikuvakoneeseen</li>
+      <li>Tarkista, että kuva on rajattu ja muokattu oikein (vaiheet 2–4)</li>
+      <li>Lataa valmis kuva Passikuvakoneesta omalle laitteellesi</li>
+      <li>Lataa kuva poliisin palvelimelle (linkki ja ohjeet vaiheessa 5)</li>
+      <li>Valmista! Olet tehnyt samat vaiheet kuin valokuvaamossa, mutta itse.</li>
+    </ol>
+  </section>
+
   <!-- STEP 1 -->
   <section class="step" id="step1">
     <div class="step-tag">Vaihe 1 / 5</div>
     <h2>Ota kuva ja lataa se</h2>
-    <p class="lead">Ota kuva <strong>juuri ennen lähettämistä</strong> — vanhaa kuvaa ei kannata käyttää. Palvelimelle ladattua kuvaa vastaava kuvatunnus on sen jälkeen voimassa 6 kuukautta hakemuksia varten.</p>
+    <p class="lead">Ota kuva <strong>juuri ennen lähettämistä</strong>, vanhaa kuvaa ei kannata käyttää. Kun kuva on ladattu palvelimelle, saamasi kuvatunnus on voimassa 6 kuukautta hakemuksia varten.</p>
     <div class="shoot">
       <div><span class="big">1,5×–3×</span>Käytä puhelimen zoomia (1,5×–3×). Ilman zoomia läheltä otettu kuva vääristää kasvoja.</div>
-      <div><span class="big">2–3 m</span>Kuvaajan etäisyys. Kamera silmien korkeudelle, puhelin pystyasentoon. Pyydä toista ottamaan kuva — selfie ei onnistu.</div>
+      <div><span class="big">2–3 m</span>Kuvaajan etäisyys. Kamera silmien korkeudelle, puhelin pystyasentoon. Pyydä toista ottamaan kuva, selfie ei onnistu.</div>
       <div><span class="big">~1 m</span>Seiso vähintään metrin irti tasaisesta, vaaleasta seinästä, niin varjot eivät osu taustaan. Valo tasaisesti edestä, mieluiten päivänvalo.</div>
     </div>
     <div class="setup">
@@ -282,14 +297,14 @@
         <text x="430" y="54" class="s-cap" text-anchor="start">Valo edestä yläviistosta,</text>
         <text x="430" y="68" class="s-cap" text-anchor="start">pehmeä mutta riittävä.</text>
         <text x="430" y="82" class="s-cap" text-anchor="start">Suora auringonvalo heijastaa</text>
-        <text x="430" y="96" class="s-cap" text-anchor="start">helposti — epäsuora valo on parempi.</text>
+        <text x="430" y="96" class="s-cap" text-anchor="start">helposti, epäsuora valo on parempi.</text>
 
       </svg>
-      <div class="hint" style="padding:6px 8px 8px;">Päivällä ulkona on usein hyvä ottaa kuva: valoa on runsaasti ja se on tasaista. Vältä kuitenkin suoraa vasten kasvoja paistavaa aurinkoa ja salamaa — suora valo kiillottaa ihon ja luo kovia varjoja.</div>
+      <div class="hint" style="padding:6px 8px 8px;">Päivällä ulkona on usein hyvä ottaa kuva: valoa on runsaasti ja se on tasaista. Vältä kuitenkin suoraa vasten kasvoja paistavaa aurinkoa ja salamaa, sillä suora valo kiillottaa ihon ja luo kovia varjoja.</div>
     </div>
     <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Lataa kuva">
       <strong>Pudota kuva tähän tai napauta valitaksesi</strong>
-      <p>Voit ladata minkä tahansa kuvamuodon — valmis passikuva tallennetaan aina poliisin vaatimassa JPEG-muodossa (.jpg).</p>
+      <p>Voit ladata minkä tahansa kuvamuodon. Valmis passikuva tallennetaan aina poliisin vaatimassa JPEG-muodossa (.jpg).</p>
     </div>
     <input type="file" id="fileInput" accept="image/*" hidden>
   </section>
@@ -298,7 +313,7 @@
   <section class="step" id="step2" hidden>
     <div class="step-tag">Vaihe 2 / 5</div>
     <h2>Automaattinen rajaus ja silmämääräinen tarkistus</h2>
-    <p class="lead">Kone rajaa pään apuviivastoon automaattisesti. Tarkista kuvasta viereisen listan kohdat — ne ovat asioita, joita kone ei voi arvioida puolestasi.</p>
+    <p class="lead">Kone rajaa pään apuviivastoon automaattisesti. Vertaa kuvaa viereisen listan kohtiin, sillä niitä kone ei voi arvioida puolestasi.</p>
     <div class="verdict" id="suitability"></div>
     <div class="editor-wrap">
       <div class="canvas-col">
@@ -314,7 +329,7 @@
         <ul class="manual">
           <li><input type="checkbox" id="m0"><label for="m0"><strong>Päälaki ja leuankärki</strong> osuvat vihreisiin vyöhykkeisiin (hiuksia ei lasketa päälakeen)</label></li>
           <li><input type="checkbox" id="m1"><label for="m1"><strong>Ilme neutraali:</strong> suu kiinni, hampaat eivät näy, silmät täysin auki, katse suoraan kameraan</label></li>
-          <li><input type="checkbox" id="m2"><label for="m2"><strong>Pää suorassa</strong> — ei kallistusta sivulle, eteen tai taakse; hartiat suoraan kameraan</label></li>
+          <li><input type="checkbox" id="m2"><label for="m2"><strong>Pää suorassa:</strong> ei kallistusta sivulle, eteen tai taakse, ja hartiat suoraan kameraan</label></li>
           <li><input type="checkbox" id="m3"><label for="m3"><strong>Ei silmälaseja</strong> tai vähintään ei heijastuksia linsseissä; ei päähinettä; ei hiuksia silmien edessä</label></li>
           <li><input type="checkbox" id="m4"><label for="m4"><strong>Ei varjoja</strong> kasvoilla eikä taustalla</label></li>
         </ul>
@@ -333,7 +348,7 @@
   <section class="step" id="step3" hidden>
     <div class="step-tag">Vaihe 3 / 5</div>
     <h2>Tasaa tausta</h2>
-    <p class="lead">Työkalu mittaa ensin taustan tasaisuuden. Jos tausta on jo tasainen, sitä ei muokata lainkaan; muuten voit tasata sen — työkalu tunnistaa reunoilta yhtenäisen taustan ja korvaa sen tasaisella sävyllä.</p>
+    <p class="lead">Työkalu mittaa ensin taustan tasaisuuden. Jos tausta on jo tasainen, sitä ei muokata lainkaan. Muussa tapauksessa voit tasata sen: työkalu tunnistaa kuvan reunoilta yhtenäisen taustan ja korvaa sen tasaisella sävyllä.</p>
     <div class="assess ask" id="bgAssess"></div>
     <div class="editor-wrap">
       <div class="canvas-col">
@@ -399,9 +414,9 @@
     <ol class="police">
       <li><strong>Avaa poliisin valokuvapalvelin</strong> (lupakuvienvastaanotto.fi) ja klikkaa <strong>"Kirjaudu"</strong> sivun oikeassa ylälaidassa.</li>
       <li><strong>Valitse "Yksityishenkilö"</strong> ja tunnistaudu vahvasti pankkitunnuksilla tai mobiilivarmenteella.</li>
-      <li><strong>Klikkaa "Uusi kuva"</strong> sivun ylälaidassa ja seuraa ohjeita — lataa tästä työkalusta tallentamasi passikuva.jpg, joka on valmiiksi oikeassa koossa ja muodossa. Palvelu näyttää saman apuviivaston kuin tämä työkalu ja tekee suuntaa-antavan automaattisen laadunarvioinnin.</li>
+      <li><strong>Klikkaa "Uusi kuva"</strong> sivun ylälaidassa ja seuraa ohjeita. Lataa tästä työkalusta tallentamasi passikuva.jpg, joka on valmiiksi oikeassa koossa ja muodossa. Palvelu näyttää saman apuviivaston kuin tämä työkalu ja tekee suuntaa-antavan automaattisen laadunarvioinnin.</li>
       <li><strong>Saat kuvatunnuksen</strong> tekstiviestillä tai sähköpostilla. Kuvatunnus on voimassa 6 kuukautta.</li>
-      <li><strong>Tee passihakemus verkossa</strong> osoitteessa poliisi.fi ja syötä kuvatunnus hakemukseen — kuvatiedostoa ei liitetä hakemukseen erikseen. Verkkohakemus on toimipisteasiointia halvempi.</li>
+      <li><strong>Tee passihakemus verkossa</strong> osoitteessa poliisi.fi ja syötä kuvatunnus hakemukseen. Kuvatiedostoa ei liitetä hakemukseen erikseen. Verkkohakemus on toimipisteasiointia halvempi.</li>
     </ol>
     <div class="linkrow">
       <a class="btn btn-primary" href="https://lupakuvienvastaanotto.fi" target="_blank" rel="noopener">Avaa valokuvapalvelin ↗</a>
@@ -415,7 +430,7 @@
 </main>
 
 <footer>
-  Kuvaa ei lähetetä mihinkään — kaikki käsittely tapahtuu selaimessasi.<br>
+  Kuvaa ei lähetetä mihinkään, vaan kaikki käsittely tapahtuu omassa selaimessasi.<br>
   Mitat: poliisin passikuvaohje (500 × 653 px, JPEG, ≤ 250 kt).<br>
   Työkalu on epävirallinen apuväline: vastuu kuvan oikeellisuudesta on aina kuvan lataajalla, ja lopullisen arvion tekee poliisi.
   <div class="mrz" aria-hidden="true">KASITTELY&lt;SELAIMESSA&lt;&lt;EI&lt;PALVELINTA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
@@ -501,7 +516,7 @@ function initView(){
       image edges (same method as the flattening step).
    2. The remaining silhouette gives the top of the hair and a
       row-width profile. The profile rises to the cheeks, narrows
-      along the jaw and flattens at the neck — the start of that
+      along the jaw and flattens at the neck; the start of that
       plateau is the chin estimate.
    3. Scale + position so hair top and chin land in the guide bands. */
 function autoCrop(){
@@ -549,7 +564,7 @@ function autoCrop(){
       gateInfo.reachTop = reach / (topH * w);
     }
 
-    // subject = person pixels connected to the bottom edge — wall
+    // subject = person pixels connected to the bottom edge; wall
     // pockets left unreached by the flood fill are excluded
     const sub = subjectFromMask(refMask, w, h);
     // silhouette row profile
@@ -598,7 +613,7 @@ function autoCrop(){
     let headH = chinY - topY;
     const ratio = headH / headW;
     if (ratio < 1.15 || ratio > 1.85){
-      // silhouette didn't yield a sane chin — anthropometric fallback
+      // silhouette didn't yield a sane chin, use anthropometric fallback
       headH = headW * 1.45;
       chinY = topY + headH;
       cropInfo = { mode: 'fallback' };
@@ -633,7 +648,7 @@ function setCropStatus(mode){
     el.textContent = 'Pää tunnistettu ja rajattu automaattisesti. Tarkista vielä, että päälaki ja leuankärki osuvat vyöhykkeisiin.';
   } else if (mode === 'fallback'){
     el.className = 'autocrop-status fail';
-    el.textContent = 'Pään ääriviivat olivat epäselvät — rajaus on arvio. Tarkista vyöhykkeet ja hienosäädä tarvittaessa.';
+    el.textContent = 'Pään ääriviivat olivat epäselvät, joten rajaus on arvio. Tarkista vyöhykkeet ja hienosäädä tarvittaessa.';
   } else {
     el.className = 'autocrop-status fail';
     el.textContent = 'Automaattinen rajaus ei onnistunut tästä kuvasta. Asemoi käsin raahaamalla ja zoomaamalla.';
@@ -868,7 +883,7 @@ function heavyRender(){
 }
 
 /* Luma standard deviation over the border strips beside and above the
-   head — the same regions the final check uses. */
+   head, the same regions the final check uses. */
 function measureBgStd(d){
   let bs = 0, bs2 = 0, bn = 0;
   const strip = (x0, x1, y0, y1) => {
@@ -887,7 +902,7 @@ function updateVerdict(skinFrac){
   let level = 'ok';
   if (gateInfo.edgeFrac > 0.12){
     level = 'bad';
-    reasons.push('taustassa on paljon yksityiskohtia — passikuva vaatii tasaisen, vaalean seinän');
+    reasons.push('taustassa on paljon yksityiskohtia, ja passikuva vaatii tasaisen, vaalean seinän');
   }
   if (skinFrac < 0.15 && cropInfo && cropInfo.mode !== 'error'){
     level = 'bad';
@@ -896,7 +911,7 @@ function updateVerdict(skinFrac){
   if (level !== 'bad'){
     if (gateInfo.edgeFrac > 0.05){ level = 'warn'; reasons.push('taustassa on melko paljon yksityiskohtia'); }
     if (cropInfo && cropInfo.mode !== 'silhouette'){ level = 'warn'; reasons.push('pään ääriviivoja ei tunnistettu luotettavasti'); }
-    if (skinFrac < 0.45){ level = 'warn'; reasons.push('kasvot eivät ehkä ole oikeassa kohdassa — tarkista rajaus'); }
+    if (skinFrac < 0.45){ level = 'warn'; reasons.push('kasvot eivät ehkä ole oikeassa kohdassa, joten tarkista rajaus'); }
     if (gateInfo.reachTop < 0.35){ level = 'warn'; reasons.push('pään ympärillä on vain vähän yhtenäistä taustaa'); }
   }
   lastVerdict = { level, reasons };
@@ -910,7 +925,7 @@ function updateVerdict(skinFrac){
   } else {
     el.innerHTML = 'Tämä kuva ei sovellu passikuvaksi:<ul>' +
       reasons.map(r => '<li>' + r + '</li>').join('') +
-      '</ul>Tarvitaan kasvokuva tasaista, vaaleaa seinää vasten — katso kuvausohjeet vaiheessa 1.';
+      '</ul>Tarvitaan kasvokuva tasaista, vaaleaa seinää vasten. Kuvausohjeet ovat vaiheessa 1.';
   }
 }
 
@@ -919,7 +934,7 @@ function updateAssessBox(){
   const v = rawBgStd.toFixed(1);
   if (bgLevel === 'even'){
     el.className = 'assess even';
-    el.textContent = 'Tausta on jo riittävän tasainen (mittaus ' + v + ') — kuvaa ei muokata lainkaan.';
+    el.textContent = 'Tausta on jo riittävän tasainen (mittaus ' + v + '), joten kuvaa ei muokata.';
   } else if (bgLevel === 'ask'){
     el.className = 'assess ask';
     el.textContent = 'Taustassa on vaihtelua (mittaus ' + v + '). Haluatko tasata sen? Valitse alta.';
@@ -940,11 +955,11 @@ function updateLeakBox(active){
   }
   if (!active){
     el.className = 'leakbox ok';
-    el.textContent = 'Taustan tasaus on pois päältä — kuva viedään sellaisenaan.';
+    el.textContent = 'Taustan tasaus on pois päältä, joten kuva viedään sellaisenaan.';
     return;
   }
   el.className = 'leakbox warn';
-  el.textContent = 'Tarkista esikatselusta, ettei mitään peity — esimerkiksi korvat voivat jäädä tasauksen alle. Korjaa tarvittaessa pienentämällä herkkyyttä liukusäätimellä.';
+  el.textContent = 'Tarkista esikatselusta, ettei mitään peity. Esimerkiksi korvat voivat jäädä tasauksen alle, ja sen voi korjata pienentämällä herkkyyttä liukusäätimellä.';
 }
 
 /* ================= Swatches ================= */
@@ -1009,12 +1024,12 @@ function runChecks(canvas){
   const effSrcW = W / view.scale;
 
   const rows = [];
-  rows.push(['ok', 'Mitat ja tiedostomuoto', 'Tarkalleen 500 × 653 px, JPEG, alle 250 kt — työkalu takaa nämä aina.']);
+  rows.push(['ok', 'Mitat ja tiedostomuoto', 'Tarkalleen 500 × 653 px, JPEG, alle 250 kt. Työkalu huolehtii näistä aina.']);
   rows.push([
     effSrcW >= 400 ? 'ok' : (effSrcW >= 300 ? 'warn' : 'bad'),
     'Lähdekuvan tarkkuus',
     effSrcW >= 400
-      ? `Rajaus käyttää n. ${Math.round(effSrcW)} px lähdekuvaa — riittävä tarkkuus.`
+      ? `Rajaus käyttää n. ${Math.round(effSrcW)} px lähdekuvaa, mikä on riittävä tarkkuus.`
       : (effSrcW >= 300
         ? `Rajaus käyttää n. ${Math.round(effSrcW)} px lähdekuvaa, joten kuvaa venytetään hieman. Tämä ei yleensä estä hyväksyntää, mutta terävämpään pääsee kuvaamalla kauempaa tai suuremmalla tarkkuudella.`
         : `Rajaus käyttää vain n. ${Math.round(effSrcW)} px lähdekuvaa, joten kuvaa venytetään voimakkaasti. Ota kuva kauempaa tai käytä alkuperäistä, pakkaamatonta tiedostoa.`)
@@ -1022,17 +1037,17 @@ function runChecks(canvas){
   rows.push([
     lapVar > 25 ? 'ok' : (lapVar > 8 ? 'warn' : 'bad'),
     'Terävyys',
-    lapVar > 25 ? 'Kasvualue on terävä.' : (lapVar > 8 ? 'Terävyys on rajoilla — tarkista suurennettuna, ettei kuva ole pehmeä.' : 'Kuva vaikuttaa epätarkalta tai liikkuneelta.')
+    lapVar > 25 ? 'Kasvualue on terävä.' : (lapVar > 8 ? 'Terävyys on rajoilla. Tarkista suurennettuna, ettei kuva ole pehmeä.' : 'Kuva vaikuttaa epätarkalta tai liikkuneelta.')
   ]);
   rows.push([
     meanLuma >= 95 && meanLuma <= 205 ? 'ok' : 'warn',
     'Valoisuus',
-    meanLuma >= 95 && meanLuma <= 205 ? 'Yleisvalotus on hyvällä alueella.' : (meanLuma < 95 ? 'Kuva on tumma — lisää valoa kasvoille.' : 'Kuva on hyvin vaalea — varo puhkipalamista.')
+    meanLuma >= 95 && meanLuma <= 205 ? 'Yleisvalotus on hyvällä alueella.' : (meanLuma < 95 ? 'Kuva on tumma. Lisää valoa kasvoille.' : 'Kuva on hyvin vaalea. Varo puhkipalamista.')
   ]);
   rows.push([
     bgStd < 7 ? 'ok' : (bgStd <= 14 ? 'warn' : 'bad'),
     'Taustan tasaisuus (lopullinen kuva)',
-    bgStd < 7 ? 'Tausta on tasainen.' : (bgStd <= 14 ? 'Taustassa on lievää vaihtelua — harkitse tasausta vaiheessa 3.' : 'Tausta on hyvin epätasainen — kuva ei todennäköisesti mene läpi. Tasaa tausta vaiheessa 3 tai vaihda kuvauspaikkaa.')
+    bgStd < 7 ? 'Tausta on tasainen.' : (bgStd <= 14 ? 'Taustassa on lievää vaihtelua. Harkitse tasausta vaiheessa 3.' : 'Tausta on hyvin epätasainen, eikä kuva todennäköisesti mene läpi. Tasaa tausta vaiheessa 3 tai vaihda kuvauspaikkaa.')
   ]);
 
   rows.push(['na', 'Silmämääräiset kohdat', 'Ilme, asento, lasit ja vyöhykkeisiin osuminen arvioidaan vaiheen 2 listalla kuvan vierestä.']);
@@ -1095,7 +1110,7 @@ $('downloadBtn').addEventListener('click', () => {
   const missing = items.filter(([id]) => !$(id).checked).map(([, label]) => label);
   if (lastFinalBgStd > 14){
     const okBg = confirm(
-      'Lopullisen kuvan tausta on hyvin epätasainen — kuva ei todennäköisesti mene läpi poliisin arvioinnissa.\n\n' +
+      'Lopullisen kuvan tausta on hyvin epätasainen, eikä kuva todennäköisesti mene läpi poliisin arvioinnissa.\n\n' +
       'Voit tasata taustan vaiheessa 3 tai ottaa uuden kuvan tasaisempaa seinää vasten.\n\nHaluatko silti ladata kuvan?'
     );
     if (!okBg) return;
