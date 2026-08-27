@@ -116,9 +116,6 @@
   .s-light line{stroke:var(--gold); stroke-width:2; stroke-linecap:round;}
   .s-ray{stroke:var(--gold); stroke-width:2; stroke-dasharray:6 5;}
   .s-ray-f{fill:var(--gold);}
-  .s-bad line{stroke:var(--bad); stroke-width:2;}
-  .s-bad polygon{fill:var(--bad);}
-  .s-bad-t{font-size:12px; fill:var(--bad);}
   .editor-wrap{display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start;}
   .canvas-col{flex:0 0 auto;}
   #stage{
@@ -287,17 +284,8 @@
         <text x="430" y="82" class="s-cap" text-anchor="start">Suora auringonvalo heijastaa</text>
         <text x="430" y="96" class="s-cap" text-anchor="start">helposti — epäsuora valo on parempi.</text>
 
-        <!-- crossed-out direct light -->
-        <g class="s-bad">
-          <line x1="470" y1="150" x2="240" y2="128"/>
-          <polygon points="240,128 250,124 251,133"/>
-          <line x1="340" y1="126" x2="360" y2="150"/>
-          <line x1="360" y1="126" x2="340" y2="150"/>
-        </g>
-        <text x="352" y="170" class="s-bad-t" text-anchor="middle">Ei suoraa kohtisuoraa valoa tai salamaa</text>
-        <text x="352" y="184" class="s-bad-t" text-anchor="middle">— heijastuu laseista ja kiillottaa ihon</text>
       </svg>
-      <div class="hint" style="padding:6px 8px 8px;">Päivällä ulkona on usein hyvä ottaa kuva: valoa on runsaasti ja se on tasaista. Vältä kuitenkin suoraa vasten kasvoja paistavaa aurinkoa.</div>
+      <div class="hint" style="padding:6px 8px 8px;">Päivällä ulkona on usein hyvä ottaa kuva: valoa on runsaasti ja se on tasaista. Vältä kuitenkin suoraa vasten kasvoja paistavaa aurinkoa ja salamaa — suora valo kiillottaa ihon ja luo kovia varjoja.</div>
     </div>
     <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Lataa kuva">
       <strong>Pudota kuva tähän tai napauta valitaksesi</strong>
@@ -318,8 +306,9 @@
       </div>
       <div class="controls-col">
         <div class="autocrop-status ok" id="cropStatus">Rajataan…</div>
-        <div class="ctrl-group">
+        <div class="ctrl-group" style="display:flex; flex-wrap:wrap; gap:10px;">
           <button class="btn btn-ghost" id="recropBtn" type="button">Rajaa uudelleen automaattisesti</button>
+          <button class="btn btn-ghost" id="changeImgBtn" type="button">Vaihda kuva…</button>
         </div>
         <div class="manual-title">Arvioi kuvasta</div>
         <ul class="manual">
@@ -391,6 +380,10 @@
     <div class="step-tag">Vaihe 5 / 5</div>
     <h2>Lataa valmis passikuva</h2>
     <p class="lead">Tiedosto tallennetaan poliisin ohjeen mukaisesti: tarkalleen 500 × 653 pikseliä, JPEG-muoto (.jpg), enintään 250 kilotavua.</p>
+    <div class="toggle-row confirm-row" style="margin:0 0 18px;">
+      <input type="checkbox" id="respConfirm">
+      <label for="respConfirm" style="margin:0;"><strong>Ymmärrän ja hyväksyn:</strong> tämä työkalu auttaa passikuvan ottamisessa ja muokkaamisessa, mutta oikeanlaisen kuvan lataaminen poliisille on omalla vastuullani, ja sitoudun noudattamaan <a href="https://poliisi.fi/documents/25235045/31329600/Poliisin-passikuvaohje-2020-FI.pdf" target="_blank" rel="noopener">poliisin passikuvaohjetta&nbsp;↗</a>.</label>
+    </div>
     <div class="result-row">
       <div>
         <img id="finalPreview" alt="Valmis passikuva">
@@ -423,7 +416,8 @@
 
 <footer>
   Kuvaa ei lähetetä mihinkään — kaikki käsittely tapahtuu selaimessasi.<br>
-  Mitat: poliisin passikuvaohje (500 × 653 px, JPEG, ≤ 250 kt).
+  Mitat: poliisin passikuvaohje (500 × 653 px, JPEG, ≤ 250 kt).<br>
+  Työkalu on epävirallinen apuväline: vastuu kuvan oikeellisuudesta on aina kuvan lataajalla, ja lopullisen arvion tekee poliisi.
   <div class="mrz" aria-hidden="true">KASITTELY&lt;SELAIMESSA&lt;&lt;EI&lt;PALVELINTA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
 </footer>
 
@@ -477,6 +471,10 @@ function loadFile(file){
   img.onload = () => {
     URL.revokeObjectURL(url);
     srcImg = img;
+    // fresh image: reset acknowledgements and flattening choice
+    ['m0','m1','m2','m3','m4','bgConfirm'].forEach(id => { const el = $(id); if (el) el.checked = false; });
+    flattenOn = false; $('bgToggle').checked = false;
+    autoTolOn = true; $('autoTol').checked = true;
     ['step2','step3','step4','step5'].forEach(id => $(id).hidden = false);
     fitStage();
     autoCrop();
@@ -642,6 +640,7 @@ function setCropStatus(mode){
   }
 }
 $('recropBtn').addEventListener('click', () => { autoCrop(); renderAll(); });
+$('changeImgBtn').addEventListener('click', () => fi.click());
 
 /* ================= Flood-fill background mask ================= */
 let qxBuf = null, qyBuf = null;
@@ -1068,6 +1067,11 @@ function exportJpeg(canvas){
 }
 $('downloadBtn').addEventListener('click', () => {
   if (!finalBlob) return;
+  if (!$('respConfirm').checked){
+    alert('Vahvista ensin valintaruudulla, että ymmärrät vastuusi ja sitoudut noudattamaan poliisin passikuvaohjetta.');
+    $('respConfirm').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
   if (lastVerdict.level === 'bad'){
     alert('Kuva ei sovellu passikuvaksi:\n\n' +
       lastVerdict.reasons.map(r => '• ' + r).join('\n') +
