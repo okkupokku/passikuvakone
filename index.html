@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passikuvakone — tee passikuva itse</title>
+<style>
+  :root{
+    --bordeaux:#3a1c28;
+    --bordeaux-deep:#2b141e;
+    --gold:#b9924c;
+    --gold-bright:#d4ab5f;
+    --paper:#efece5;
+    --card:#ffffff;
+    --ink:#241a1e;
+    --ink-soft:#6b5a60;
+    --line:#ddd5c9;
+    --ok:#2e7d4f;
+    --warn:#b07818;
+    --bad:#b23a3a;
+    --guide:#00c2a8;
+    --mono:"SF Mono", ui-monospace, "Cascadia Mono", "Consolas", monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    background:var(--paper); color:var(--ink); line-height:1.55;
+  }
+  header{
+    background:linear-gradient(160deg, var(--bordeaux) 0%, var(--bordeaux-deep) 100%);
+    color:#f3e9d8; padding:56px 20px 40px; text-align:center;
+    border-bottom:4px solid var(--gold);
+  }
+  .crest{
+    width:64px; height:64px; margin:0 auto 18px; border:2px solid var(--gold);
+    border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:30px; color:var(--gold-bright);
+  }
+  header h1{
+    font-size:clamp(28px, 5vw, 44px); font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--gold-bright);
+  }
+  header p.sub{
+    margin-top:10px; max-width:560px; margin-inline:auto; color:#d8c7ce; font-size:15.5px;
+  }
+  .mrz{
+    margin-top:28px; font-family:var(--mono); font-size:12px; letter-spacing:.18em;
+    color:rgba(243,233,216,.45); white-space:nowrap; overflow:hidden; user-select:none;
+  }
+  main{max-width:940px; margin:0 auto; padding:28px 16px 80px;}
+  section.step{
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:26px 24px; margin-top:26px;
+    box-shadow:0 1px 3px rgba(43,20,30,.06);
+  }
+  .step-tag{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; color:var(--gold);
+    text-transform:uppercase; margin-bottom:6px;
+  }
+  section.step h2{font-size:21px; margin-bottom:8px;}
+  section.step > p.lead{color:var(--ink-soft); font-size:14.5px; margin-bottom:16px;}
+  .btn{
+    display:inline-block; border:none; cursor:pointer; font:inherit;
+    font-weight:600; font-size:15px; padding:12px 22px; border-radius:8px;
+    transition:transform .08s ease, box-shadow .15s ease;
+    text-decoration:none; text-align:center;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--bordeaux); color:#f5ead9;}
+  .btn-primary:hover{box-shadow:0 3px 10px rgba(58,28,40,.35);}
+  .btn-gold{background:var(--gold); color:#2b141e;}
+  .btn-gold:hover{background:var(--gold-bright);}
+  .btn-ghost{background:transparent; color:var(--bordeaux); border:1.5px solid var(--bordeaux);}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
+  .btn:focus-visible{outline:3px solid var(--guide); outline-offset:2px;}
+  .dropzone{
+    border:2px dashed var(--gold); border-radius:10px; padding:44px 20px;
+    text-align:center; cursor:pointer; background:#fdfaf4;
+    transition:background .15s ease;
+  }
+  .dropzone:hover, .dropzone.drag{background:#f7efdf;}
+  .dropzone p{color:var(--ink-soft); font-size:14px; margin-top:6px;}
+  .dropzone strong{color:var(--bordeaux); font-size:16px;}
+  /* Shooting advice card */
+  .shoot{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:14px; margin-bottom:18px;
+  }
+  .shoot div{
+    background:#faf7f0; border:1px solid var(--line); border-radius:8px; padding:14px;
+    font-size:13.5px;
+  }
+  .shoot .big{
+    font-family:var(--mono); font-size:22px; font-weight:700; color:var(--bordeaux);
+    display:block; margin-bottom:4px;
+  }
+  /* ---------- Setup diagram ---------- */
+  .setup{
+    border:1px solid var(--line); border-radius:10px; background:#fdfbf6;
+    padding:12px 10px 6px; margin-bottom:18px;
+  }
+  .setup svg{width:100%; height:auto; display:block;}
+  .s-floor{stroke:#cfc6b8; stroke-width:2;}
+  .s-wall{fill:#e8e2d4; stroke:#cfc6b8;}
+  .s-wall-hatch{stroke:#b7ab97; stroke-width:2;}
+  .s-fig circle{fill:none; stroke:var(--bordeaux); stroke-width:2.5;}
+  .s-fig line{stroke:var(--bordeaux); stroke-width:2.5; stroke-linecap:round;}
+  .s-phone{fill:var(--bordeaux);}
+  .s-eyeline{stroke:#b7ab97; stroke-width:1.5;}
+  .s-dim{stroke:var(--guide); stroke-width:1.8;}
+  .s-dim-f{fill:var(--guide);}
+  .s-dim-t{font-family:var(--mono); font-size:15px; font-weight:700; fill:#00806e;}
+  .s-cap{font-size:12px; fill:var(--ink-soft);}
+  .s-light circle{fill:#f3dfae; stroke:var(--gold); stroke-width:2;}
+  .s-light line{stroke:var(--gold); stroke-width:2; stroke-linecap:round;}
+  .s-ray{stroke:var(--gold); stroke-width:2; stroke-dasharray:6 5;}
+  .s-ray-f{fill:var(--gold);}
+  .s-bad line{stroke:var(--bad); stroke-width:2;}
+  .s-bad polygon{fill:var(--bad);}
+  .s-bad-t{font-size:12px; fill:var(--bad);}
+  .editor-wrap{display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start;}
+  .canvas-col{flex:0 0 auto;}
+  #stage{
+    border:1px solid var(--line); border-radius:6px; touch-action:none;
+    cursor:grab; display:block; background:#e8e4db; max-width:100%;
+  }
+  #stage.grabbing{cursor:grabbing;}
+  .controls-col{flex:1 1 280px; min-width:260px;}
+  .ctrl-group{margin-bottom:16px;}
+  .ctrl-group label{display:block; font-size:13px; font-weight:600; margin-bottom:6px;}
+  input[type=range]{width:100%; accent-color:var(--bordeaux);}
+  .hint{font-size:12.5px; color:var(--ink-soft); margin-top:4px;}
+  .verdict{
+    margin-bottom:16px; font-size:14px; padding:12px 14px; border-radius:8px; font-weight:600;
+  }
+  .verdict.ok{background:#e2f2e8; color:var(--ok); border:1px solid #bcdcc8;}
+  .verdict.warn{background:#f8ecd6; color:var(--warn); border:1px solid #e6d3a8;}
+  .verdict.bad{background:#f7e1e1; color:var(--bad); border:1px solid #e3b6b6;}
+  .verdict ul{margin:6px 0 0 20px; font-weight:400;}
+  .autocrop-status{
+    font-size:13px; padding:10px 12px; border-radius:7px; margin-bottom:14px;
+  }
+  .autocrop-status.ok{background:#e2f2e8; color:var(--ok);}
+  .autocrop-status.fail{background:#f8ecd6; color:var(--warn);}
+  .guide-legend{font-size:12.5px; color:var(--ink-soft); border-left:3px solid var(--guide); padding-left:10px; margin-top:14px;}
+  .toggle-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .toggle-row input[type=checkbox]{width:18px; height:18px; accent-color:var(--bordeaux); flex:0 0 auto;}
+  .swatches{display:flex; gap:8px; margin-top:8px;}
+  .swatch{width:34px; height:34px; border-radius:6px; border:2px solid transparent; cursor:pointer;}
+  .swatch.sel{border-color:var(--bordeaux); box-shadow:0 0 0 2px #fff inset;}
+  .leakbox{
+    margin-top:12px; font-size:13px; padding:10px 12px; border-radius:7px;
+  }
+  .leakbox.ok{background:#e2f2e8; color:var(--ok);}
+  .leakbox.warn{background:#f8ecd6; color:var(--warn); border:1px solid #e6d3a8;}
+  .leakbox.bad{background:#f7e1e1; color:var(--bad);}
+  .confirm-row{
+    background:#f8ecd6; border:1px solid #e6d3a8; border-radius:7px;
+    padding:11px 12px; margin-top:10px; font-size:13.5px;
+  }
+  .assess{margin-bottom:14px; font-size:13.5px; padding:11px 13px; border-radius:7px; font-weight:600;}
+  .assess.even{background:#e2f2e8; color:var(--ok);}
+  .assess.ask{background:#eef3f8; color:#2c5a80;}
+  .assess.bad{background:#f7e1e1; color:var(--bad);}
+  ul.checks{list-style:none;}
+  ul.checks li{
+    display:flex; gap:10px; align-items:flex-start; padding:9px 0;
+    border-bottom:1px dashed var(--line); font-size:14px;
+  }
+  ul.checks li:last-child{border-bottom:none;}
+  .badge{
+    flex:0 0 auto; font-family:var(--mono); font-size:11px; font-weight:700;
+    padding:3px 8px; border-radius:5px; letter-spacing:.05em; margin-top:1px;
+  }
+  .badge.ok{background:#e2f2e8; color:var(--ok);}
+  .badge.warn{background:#f8ecd6; color:var(--warn);}
+  .badge.bad{background:#f7e1e1; color:var(--bad);}
+  .badge.na{background:#eee; color:#888;}
+  ul.manual{list-style:none;}
+  ul.manual li{display:flex; gap:10px; align-items:flex-start; padding:7px 0; font-size:13.5px; border-bottom:1px dashed var(--line);}
+  ul.manual li:last-child{border-bottom:none;}
+  ul.manual input{width:17px; height:17px; margin-top:2px; accent-color:var(--ok); flex:0 0 auto;}
+  .manual-title{font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--bordeaux); margin:14px 0 4px;}
+  .result-row{display:flex; flex-wrap:wrap; gap:22px; align-items:center;}
+  #finalPreview{border:1px solid var(--line); border-radius:6px; width:180px; height:auto;}
+  .filemeta{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft); margin-top:8px;}
+  ol.police{margin-left:20px; font-size:14.5px;}
+  ol.police li{margin-bottom:12px;}
+  .result-row{display:flex; flex-wrap:wrap; gap:22px; align-items:center;}
+  #finalPreview{border:1px solid var(--line); border-radius:6px; width:180px; height:auto;}
+  .filemeta{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft); margin-top:8px;}
+  ol.police{margin-left:20px; font-size:14.5px;}
+  ol.police li{margin-bottom:12px;}
+  .linkrow{display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;}
+  .notice{
+    margin-top:18px; background:#fbf3e2; border:1px solid #e6d3a8; border-radius:8px;
+    padding:14px 16px; font-size:13.5px; color:#6d5420;
+  }
+  footer{text-align:center; padding:30px 16px 46px; color:var(--ink-soft); font-size:12.5px;}
+  footer .mrz{color:rgba(58,28,40,.28); margin-top:14px;}
+  @media (max-width:640px){ section.step{padding:20px 16px;} }
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} .btn{transition:none;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="crest" aria-hidden="true">⚜</div>
+  <h1>Passikuvakone</h1>
+  <p class="sub">Tee puhelimella otetusta kuvasta poliisin mittavaatimukset täyttävä passikuva. Rajaus tehdään automaattisesti — sinä vain arvioit lopputuloksen.</p>
+  <div class="mrz" aria-hidden="true">P&lt;FIN&lt;&lt;PASSIKUVA&lt;&lt;TYOKALU&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;500X653&lt;JPEG&lt;MAX250KB&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+</header>
+
+<main>
+
+  <!-- STEP 1 -->
+  <section class="step" id="step1">
+    <div class="step-tag">Vaihe 1 / 5</div>
+    <h2>Ota kuva ja lataa se</h2>
+    <p class="lead">Ota kuva <strong>juuri ennen lähettämistä</strong> — vanhaa kuvaa ei kannata käyttää. Palvelimelle ladattua kuvaa vastaava kuvatunnus on sen jälkeen voimassa 6 kuukautta hakemuksia varten.</p>
+    <div class="shoot">
+      <div><span class="big">1,5×–3×</span>Käytä puhelimen zoomia (1,5×–3×). Ilman zoomia läheltä otettu kuva vääristää kasvoja.</div>
+      <div><span class="big">2–3 m</span>Kuvaajan etäisyys. Kamera silmien korkeudelle, puhelin pystyasentoon. Pyydä toista ottamaan kuva — selfie ei onnistu.</div>
+      <div><span class="big">~1 m</span>Seiso vähintään metrin irti tasaisesta, vaaleasta seinästä, niin varjot eivät osu taustaan. Valo tasaisesti edestä, mieluiten päivänvalo.</div>
+    </div>
+    <div class="setup">
+      <svg viewBox="0 0 720 320" role="img" aria-label="Kuvausasetelma sivulta: seinä, kuvattava noin metrin päässä seinästä, kuvaaja 2–3 metrin päässä, valo edestä yläviistosta">
+        <!-- floor -->
+        <line x1="20" y1="272" x2="700" y2="272" class="s-floor"/>
+        <!-- wall -->
+        <rect x="36" y="52" width="14" height="220" class="s-wall"/>
+        <line x1="43" y1="60" x2="43" y2="264" class="s-wall-hatch" stroke-dasharray="3 6"/>
+        <text x="58" y="40" class="s-cap" text-anchor="start">Tasainen vaalea seinä</text>
+
+        <!-- subject stick figure -->
+        <g class="s-fig">
+          <circle cx="200" cy="118" r="17"/>
+          <line x1="200" y1="135" x2="200" y2="205"/>
+          <line x1="200" y1="152" x2="178" y2="185"/>
+          <line x1="200" y1="152" x2="222" y2="185"/>
+          <line x1="200" y1="205" x2="184" y2="268"/>
+          <line x1="200" y1="205" x2="216" y2="268"/>
+        </g>
+        <text x="200" y="296" class="s-cap" text-anchor="middle">Kuvattava</text>
+
+        <!-- photographer stick figure with phone -->
+        <g class="s-fig">
+          <circle cx="530" cy="122" r="17"/>
+          <line x1="530" y1="139" x2="530" y2="207"/>
+          <line x1="530" y1="155" x2="497" y2="130"/>
+          <line x1="530" y1="160" x2="552" y2="192"/>
+          <line x1="530" y1="207" x2="514" y2="268"/>
+          <line x1="530" y1="207" x2="546" y2="268"/>
+        </g>
+        <rect x="486" y="118" width="10" height="20" rx="2" class="s-phone"/>
+        <text x="530" y="296" class="s-cap" text-anchor="middle">Kuvaaja</text>
+
+        <!-- eye-level line -->
+        <line x1="222" y1="120" x2="482" y2="122" class="s-eyeline" stroke-dasharray="5 5"/>
+        <text x="330" y="110" class="s-cap" text-anchor="middle">Kamera silmien korkeudella</text>
+
+        <!-- distance arrows -->
+        <line x1="54" y1="246" x2="192" y2="246" class="s-dim"/>
+        <polygon points="54,246 62,242 62,250" class="s-dim-f"/>
+        <polygon points="192,246 184,242 184,250" class="s-dim-f"/>
+        <text x="123" y="238" class="s-dim-t" text-anchor="middle">≈ 1 m</text>
+        <text x="123" y="262" class="s-cap" text-anchor="middle">varjot eivät osu seinään</text>
+
+        <line x1="210" y1="246" x2="522" y2="246" class="s-dim"/>
+        <polygon points="210,246 218,242 218,250" class="s-dim-f"/>
+        <polygon points="522,246 514,242 514,250" class="s-dim-f"/>
+        <text x="366" y="238" class="s-dim-t" text-anchor="middle">2–3 m</text>
+
+        <!-- light source: front, above, at an angle -->
+        <g class="s-light">
+          <circle cx="392" cy="38" r="13"/>
+          <line x1="392" y1="18" x2="392" y2="10"/><line x1="392" y1="58" x2="392" y2="66"/>
+          <line x1="372" y1="38" x2="364" y2="38"/><line x1="420" y1="38" x2="412" y2="38"/>
+          <line x1="378" y1="24" x2="372" y2="18"/><line x1="406" y1="24" x2="412" y2="18"/>
+          <line x1="378" y1="52" x2="372" y2="58"/><line x1="406" y1="52" x2="412" y2="58"/>
+        </g>
+        <line x1="380" y1="52" x2="222" y2="108" class="s-ray"/>
+        <polygon points="222,108 232,102 236,111" class="s-ray-f"/>
+        <text x="430" y="54" class="s-cap" text-anchor="start">Valo edestä yläviistosta,</text>
+        <text x="430" y="68" class="s-cap" text-anchor="start">pehmeä mutta riittävä.</text>
+        <text x="430" y="82" class="s-cap" text-anchor="start">Suora auringonvalo heijastaa</text>
+        <text x="430" y="96" class="s-cap" text-anchor="start">helposti — epäsuora valo on parempi.</text>
+
+        <!-- crossed-out direct light -->
+        <g class="s-bad">
+          <line x1="470" y1="150" x2="240" y2="128"/>
+          <polygon points="240,128 250,124 251,133"/>
+          <line x1="340" y1="126" x2="360" y2="150"/>
+          <line x1="360" y1="126" x2="340" y2="150"/>
+        </g>
+        <text x="352" y="170" class="s-bad-t" text-anchor="middle">Ei suoraa kohtisuoraa valoa tai salamaa</text>
+        <text x="352" y="184" class="s-bad-t" text-anchor="middle">— heijastuu laseista ja kiillottaa ihon</text>
+      </svg>
+      <div class="hint" style="padding:6px 8px 8px;">Päivällä ulkona on usein hyvä ottaa kuva: valoa on runsaasti ja se on tasaista. Vältä kuitenkin suoraa vasten kasvoja paistavaa aurinkoa.</div>
+    </div>
+    <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Lataa kuva">
+      <strong>Pudota kuva tähän tai napauta valitaksesi</strong>
+      <p>Voit ladata minkä tahansa kuvamuodon — valmis passikuva tallennetaan aina poliisin vaatimassa JPEG-muodossa (.jpg).</p>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" hidden>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step" id="step2" hidden>
+    <div class="step-tag">Vaihe 2 / 5</div>
+    <h2>Automaattinen rajaus ja silmämääräinen tarkistus</h2>
+    <p class="lead">Kone rajaa pään apuviivastoon automaattisesti. Tarkista kuvasta viereisen listan kohdat — ne ovat asioita, joita kone ei voi arvioida puolestasi.</p>
+    <div class="verdict" id="suitability"></div>
+    <div class="editor-wrap">
+      <div class="canvas-col">
+        <canvas id="stage" width="500" height="653" aria-label="Rajattu passikuva apuviivastolla"></canvas>
+      </div>
+      <div class="controls-col">
+        <div class="autocrop-status ok" id="cropStatus">Rajataan…</div>
+        <div class="ctrl-group">
+          <button class="btn btn-ghost" id="recropBtn" type="button">Rajaa uudelleen automaattisesti</button>
+        </div>
+        <div class="manual-title">Arvioi kuvasta</div>
+        <ul class="manual">
+          <li><input type="checkbox" id="m0"><label for="m0"><strong>Päälaki ja leuankärki</strong> osuvat vihreisiin vyöhykkeisiin (hiuksia ei lasketa päälakeen)</label></li>
+          <li><input type="checkbox" id="m1"><label for="m1"><strong>Ilme neutraali:</strong> suu kiinni, hampaat eivät näy, silmät täysin auki, katse suoraan kameraan</label></li>
+          <li><input type="checkbox" id="m2"><label for="m2"><strong>Pää suorassa</strong> — ei kallistusta sivulle, eteen tai taakse; hartiat suoraan kameraan</label></li>
+          <li><input type="checkbox" id="m3"><label for="m3"><strong>Ei silmälaseja</strong> tai vähintään ei heijastuksia linsseissä; ei päähinettä; ei hiuksia silmien edessä</label></li>
+          <li><input type="checkbox" id="m4"><label for="m4"><strong>Ei varjoja</strong> kasvoilla eikä taustalla</label></li>
+        </ul>
+        <div class="ctrl-group" style="margin-top:16px;">
+          <label for="zoom">Hienosäätö tarvittaessa (raahaa kuvaa, nipistä tai käytä säädintä)</label>
+          <input type="range" id="zoom" min="0" max="100" value="0" step="0.5">
+        </div>
+        <div class="guide-legend">
+          Apuviivasto poliisin mitoista: päälaki 56–84 px yläreunasta, leuankärki 96–124 px alareunasta, keskilinja ±21 px. Kun pää osuu vyöhykkeisiin, pään korkeus (445–500 px) täyttyy automaattisesti.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step" id="step3" hidden>
+    <div class="step-tag">Vaihe 3 / 5</div>
+    <h2>Tasaa tausta</h2>
+    <p class="lead">Työkalu mittaa ensin taustan tasaisuuden. Jos tausta on jo tasainen, sitä ei muokata lainkaan; muuten voit tasata sen — työkalu tunnistaa reunoilta yhtenäisen taustan ja korvaa sen tasaisella sävyllä.</p>
+    <div class="assess ask" id="bgAssess"></div>
+    <div class="editor-wrap">
+      <div class="canvas-col">
+        <canvas id="bgPreview" width="500" height="653" style="max-width:100%; border:1px solid var(--line); border-radius:6px;" aria-label="Taustan esikatselu"></canvas>
+      </div>
+      <div class="controls-col">
+        <div class="toggle-row">
+          <input type="checkbox" id="bgToggle">
+          <label for="bgToggle" style="margin:0;">Kyllä, tasaa tausta</label>
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="autoTol" checked>
+          <label for="autoTol" style="margin:0;">Käytä oletusherkkyyttä</label>
+        </div>
+        <div class="ctrl-group">
+          <label for="tol">Tunnistuksen herkkyys: <span id="tolVal"></span></label>
+          <input type="range" id="tol" min="15" max="90" value="50">
+          <div class="hint">Säätimen käyttö kytkee oletuksen pois. Nosta, jos taustaan jää läiskiä; laske, jos esimerkiksi korvat tai hiukset alkavat peittyä.</div>
+        </div>
+        <div class="ctrl-group">
+          <label>Taustan sävy</label>
+          <div class="swatches" id="swatches"></div>
+          <div class="hint">Ensimmäinen sävy on kuvasta mitattu seinän keskisävy.</div>
+        </div>
+        <div class="leakbox ok" id="leakBox"></div>
+        <div class="toggle-row confirm-row" id="bgConfirmRow" hidden>
+          <input type="checkbox" id="bgConfirm">
+          <label for="bgConfirm" style="margin:0;"><strong>Vahvistan esikatselusta:</strong> mikään ei peity (esim. korvat tai hiukset) eikä pään ympärille jää outoa reunaa.</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step" id="step4" hidden>
+    <div class="step-tag">Vaihe 4 / 5</div>
+    <h2>Automaattitarkistukset</h2>
+    <p class="lead">Mittaukset lasketaan lopullisesta 500 × 653 px kuvasta.</p>
+    <ul class="checks" id="autoChecks"></ul>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step" id="step5" hidden>
+    <div class="step-tag">Vaihe 5 / 5</div>
+    <h2>Lataa valmis passikuva</h2>
+    <p class="lead">Tiedosto tallennetaan poliisin ohjeen mukaisesti: tarkalleen 500 × 653 pikseliä, JPEG-muoto (.jpg), enintään 250 kilotavua.</p>
+    <div class="result-row">
+      <div>
+        <img id="finalPreview" alt="Valmis passikuva">
+        <div class="filemeta" id="fileMeta"></div>
+      </div>
+      <div>
+        <button class="btn btn-gold" id="downloadBtn" type="button">Lataa passikuva.jpg</button>
+      </div>
+    </div>
+
+    <h2 style="margin-top:34px;">Lähetä poliisille</h2>
+    <p class="lead">Kuvaa ei voi lähettää suoraan tältä sivulta, koska poliisin valokuvapalvelin vaatii vahvan tunnistautumisen (pankkitunnukset tai mobiilivarmenne). Näin se menee:</p>
+    <ol class="police">
+      <li><strong>Avaa poliisin valokuvapalvelin</strong> (lupakuvienvastaanotto.fi) ja klikkaa <strong>"Kirjaudu"</strong> sivun oikeassa ylälaidassa.</li>
+      <li><strong>Valitse "Yksityishenkilö"</strong> ja tunnistaudu vahvasti pankkitunnuksilla tai mobiilivarmenteella.</li>
+      <li><strong>Klikkaa "Uusi kuva"</strong> sivun ylälaidassa ja seuraa ohjeita — lataa tästä työkalusta tallentamasi passikuva.jpg, joka on valmiiksi oikeassa koossa ja muodossa. Palvelu näyttää saman apuviivaston kuin tämä työkalu ja tekee suuntaa-antavan automaattisen laadunarvioinnin.</li>
+      <li><strong>Saat kuvatunnuksen</strong> tekstiviestillä tai sähköpostilla. Kuvatunnus on voimassa 6 kuukautta.</li>
+      <li><strong>Tee passihakemus verkossa</strong> osoitteessa poliisi.fi ja syötä kuvatunnus hakemukseen — kuvatiedostoa ei liitetä hakemukseen erikseen. Verkkohakemus on toimipisteasiointia halvempi.</li>
+    </ol>
+    <div class="linkrow">
+      <a class="btn btn-primary" href="https://lupakuvienvastaanotto.fi" target="_blank" rel="noopener">Avaa valokuvapalvelin ↗</a>
+      <a class="btn btn-ghost" href="https://poliisi.fi/passi" target="_blank" rel="noopener">Passihakemus (poliisi.fi) ↗</a>
+    </div>
+    <div class="notice">
+      <strong>Huomio muokkauksesta:</strong> poliisin passikuvaohje kieltää kuvan digitaalisen muokkaamisen, ja taustan tasaaminen on muokkausta. Vaikka kuva menisi automaattitarkistuksesta läpi, virkailija voi hylätä sen. Varmin tapa on ottaa kuva suoraan tasaista seinää vasten ja käyttää tätä työkalua vain rajaukseen ja tarkistuksiin. Lopullisen arvion tekee aina poliisin virkailija.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Kuvaa ei lähetetä mihinkään — kaikki käsittely tapahtuu selaimessasi.<br>
+  Mitat: poliisin passikuvaohje (500 × 653 px, JPEG, ≤ 250 kt).
+  <div class="mrz" aria-hidden="true">KASITTELY&lt;SELAIMESSA&lt;&lt;EI&lt;PALVELINTA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ================= Constants (poliisin passikuvaohje) ================= */
+const W = 500, H = 653;
+const CROWN_MIN = 56, CROWN_MAX = 84;
+const CHIN_MIN = 96, CHIN_MAX = 124;
+const CENTER_TOL = 21;
+const MAX_BYTES = 250 * 1024;
+const HAIR_TARGET_Y = 62;          // where the top of hair lands (inside crown band)
+const CHIN_TARGET_Y = H - 110;     // middle of the chin band
+
+/* ================= State ================= */
+let srcImg = null;
+let view = { scale: 1, minScale: 1, maxScale: 1, x: 0, y: 0 };
+let bgColor = [220,215,205];
+let chosenIdx = 0, chosenBg = null;
+let flattenOn = false;
+let lastFlattenApplied = false;
+let tolerance = 50;
+let autoTolOn = true;
+let rawBgStd = 0, bgLevel = 'ask', lastFinalBgStd = 0;
+let finalBlob = null;
+let dispScale = 1;
+let cropInfo = null; // result of last auto-crop attempt
+let gateInfo = { edgeFrac: 0, reachTop: 1 }; // source-level suitability metrics
+let lastVerdict = { level: 'ok', reasons: [] };
+
+const stage = document.getElementById('stage');
+const sctx = stage.getContext('2d');
+const bgPrev = document.getElementById('bgPreview');
+const bctx = bgPrev.getContext('2d');
+const $ = id => document.getElementById(id);
+
+/* ================= Upload ================= */
+const dz = $('dropzone'), fi = $('fileInput');
+dz.addEventListener('click', () => fi.click());
+dz.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fi.click(); }});
+['dragover','dragenter'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
+['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag'); }));
+dz.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) loadFile(f); });
+fi.addEventListener('change', () => { if (fi.files[0]) loadFile(fi.files[0]); });
+
+function loadFile(file){
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    srcImg = img;
+    ['step2','step3','step4','step5'].forEach(id => $(id).hidden = false);
+    fitStage();
+    autoCrop();
+    renderAll();
+    $('step2').scrollIntoView({behavior:'smooth'});
+  };
+  img.onerror = () => alert('Kuvan avaaminen epäonnistui. Kokeile JPEG- tai PNG-muotoa (HEIC pitää muuntaa ensin).');
+  img.src = url;
+}
+
+/* ================= Default view (cover) ================= */
+function initView(){
+  const cover = Math.max(W / srcImg.width, H / srcImg.height);
+  view.minScale = cover * 0.7;   // allow slight zoom-out for tight source crops
+  view.maxScale = cover * 6;
+  view.scale = cover;
+  view.x = (W - srcImg.width * cover) / 2;
+  view.y = (H - srcImg.height * cover) / 2;
+  syncZoomSlider();
+}
+
+/* ================= Automatic cropping =================
+   1. Downscale the source and flood-fill the background from the
+      image edges (same method as the flattening step).
+   2. The remaining silhouette gives the top of the hair and a
+      row-width profile. The profile rises to the cheeks, narrows
+      along the jaw and flattens at the neck — the start of that
+      plateau is the chin estimate.
+   3. Scale + position so hair top and chin land in the guide bands. */
+function autoCrop(){
+  initView();
+  cropInfo = null;
+  try {
+    const maxDim = 640;
+    const s = Math.min(1, maxDim / Math.max(srcImg.width, srcImg.height));
+    const w = Math.max(2, Math.round(srcImg.width * s));
+    const h = Math.max(2, Math.round(srcImg.height * s));
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    const x = c.getContext('2d');
+    x.drawImage(srcImg, 0, 0, w, h);
+    const d = x.getImageData(0, 0, w, h).data;
+
+    // wall tone + noise from top corners
+    const { ref, tRef } = cornerStats(d, w, h);
+    const refMask = floodMask(d, w, h, ref, tRef);
+
+    // ---- suitability metrics (independent of head detection) ----
+    // edge density in the border strips of the upper part: a plain
+    // wall scores near zero, an outdoor scene scores high
+    {
+      const bw = Math.max(8, Math.round(w * 0.10));
+      const hh = Math.round(h * 0.45), th = Math.round(h * 0.08);
+      let hits = 0, tot = 0;
+      const inStrip = (px, py) => (py < hh && (px < bw || px >= w - bw)) || py < th;
+      for (let py = 0; py < hh; py++){
+        for (let px = 0; px < w - 1; px++){
+          if (!inStrip(px, py)) continue;
+          const i = (py * w + px) * 4;
+          const l  = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+          const lr = 0.299*d[i+4] + 0.587*d[i+5] + 0.114*d[i+6];
+          const ib = i + w * 4;
+          const lb = py < h - 1 ? 0.299*d[ib] + 0.587*d[ib+1] + 0.114*d[ib+2] : l;
+          if (Math.abs(l - lr) + Math.abs(l - lb) > 24) hits++;
+          tot++;
+        }
+      }
+      gateInfo.edgeFrac = tot ? hits / tot : 0;
+      // how much of the top third the background flood actually reaches
+      let reach = 0; const topH = Math.round(h * 0.35);
+      for (let p = 0; p < topH * w; p++) reach += refMask[p];
+      gateInfo.reachTop = reach / (topH * w);
+    }
+
+    // subject = person pixels connected to the bottom edge — wall
+    // pockets left unreached by the flood fill are excluded
+    const sub = subjectFromMask(refMask, w, h);
+    // silhouette row profile
+    const rowW = new Int32Array(h), rowMin = new Int32Array(h).fill(-1), rowMax = new Int32Array(h).fill(-1);
+    for (let py = 0; py < h; py++){
+      let cnt = 0, mn = -1, mx = -1;
+      for (let px = 0; px < w; px++){
+        if (sub[py*w+px]){ cnt++; if (mn < 0) mn = px; mx = px; }
+      }
+      rowW[py] = cnt; rowMin[py] = mn; rowMax[py] = mx;
+    }
+    // smooth profile
+    const sm = new Float32Array(h);
+    for (let y = 0; y < h; y++){
+      let sum = 0, cnt = 0;
+      for (let o = -3; o <= 3; o++){ const yy = y+o; if (yy>=0 && yy<h){ sum += rowW[yy]; cnt++; } }
+      sm[y] = sum / cnt;
+    }
+    // hair top: first row with meaningful coverage
+    let topY = -1;
+    for (let y = 0; y < h; y++){ if (sm[y] > 0.05 * w){ topY = y; break; } }
+    if (topY < 0) throw new Error('ei siluettia');
+
+    // cheek maximum: profile rises then starts a sustained decline
+    let peakY = topY, peakW = sm[topY];
+    for (let y = topY; y < h; y++){
+      if (sm[y] >= peakW){ peakW = sm[y]; peakY = y; }
+      if (sm[y] < peakW * 0.9 && y > peakY + 4) break;
+    }
+    // shoulders: profile clearly wider than the head again
+    let shoulderY = h - 1;
+    for (let y = peakY; y < h; y++){ if (sm[y] > peakW * 1.15){ shoulderY = y; break; } }
+    // neck minimum along the jaw taper
+    let neckMin = Infinity, neckMinY = peakY;
+    for (let y = peakY; y < shoulderY; y++){ if (sm[y] < neckMin){ neckMin = sm[y]; neckMinY = y; } }
+    // chin: the profile has risen ~4.5 % back up from the jawline
+    // minimum (below the chin the neck is slightly wider than the
+    // narrowest point of the jaw taper)
+    let chinY = -1;
+    for (let y = neckMinY; y < shoulderY; y++){
+      if (sm[y] >= neckMin * 1.045){ chinY = y; break; }
+    }
+    if (chinY < 0) chinY = neckMinY + Math.round(0.04 * (neckMinY - topY));
+
+    const headW = peakW;
+    let headH = chinY - topY;
+    const ratio = headH / headW;
+    if (ratio < 1.15 || ratio > 1.85){
+      // silhouette didn't yield a sane chin — anthropometric fallback
+      headH = headW * 1.45;
+      chinY = topY + headH;
+      cropInfo = { mode: 'fallback' };
+    } else {
+      cropInfo = { mode: 'silhouette' };
+    }
+    // horizontal centre from eye-level rows
+    let cxSum = 0, cxN = 0;
+    const y0 = Math.round(topY + headH * 0.25), y1 = Math.round(topY + headH * 0.65);
+    for (let y = y0; y <= y1 && y < h; y++){
+      if (rowMin[y] >= 0){ cxSum += (rowMin[y] + rowMax[y]) / 2; cxN++; }
+    }
+    const cx = cxN ? cxSum / cxN : w / 2;
+
+    // map: downscaled coords -> source coords -> frame
+    const scale = (CHIN_TARGET_Y - HAIR_TARGET_Y) / (headH / s);   // frame px per source px
+    view.scale = Math.min(view.maxScale, Math.max(view.minScale, scale));
+    view.x = W / 2 - (cx / s) * view.scale;
+    view.y = HAIR_TARGET_Y - (topY / s) * view.scale;
+    clampView();
+    syncZoomSlider();
+    setCropStatus(cropInfo.mode);
+  } catch (err){
+    cropInfo = { mode: 'error' };
+    setCropStatus('error');
+  }
+}
+function setCropStatus(mode){
+  const el = $('cropStatus');
+  if (mode === 'silhouette'){
+    el.className = 'autocrop-status ok';
+    el.textContent = 'Pää tunnistettu ja rajattu automaattisesti. Tarkista vielä, että päälaki ja leuankärki osuvat vyöhykkeisiin.';
+  } else if (mode === 'fallback'){
+    el.className = 'autocrop-status fail';
+    el.textContent = 'Pään ääriviivat olivat epäselvät — rajaus on arvio. Tarkista vyöhykkeet ja hienosäädä tarvittaessa.';
+  } else {
+    el.className = 'autocrop-status fail';
+    el.textContent = 'Automaattinen rajaus ei onnistunut tästä kuvasta. Asemoi käsin raahaamalla ja zoomaamalla.';
+  }
+}
+$('recropBtn').addEventListener('click', () => { autoCrop(); renderAll(); });
+
+/* ================= Flood-fill background mask ================= */
+let qxBuf = null, qyBuf = null;
+function floodMask(d, w, h, ref, tol){
+  const tol2 = tol * tol * 3;
+  const mask = new Uint8Array(w * h);
+  if (!qxBuf || qxBuf.length < w * h){ qxBuf = new Int32Array(w * h); qyBuf = new Int32Array(w * h); }
+  const qx = qxBuf, qy = qyBuf;
+  let head = 0, tail = 0;
+  const isBg = i => {
+    const dr = d[i]-ref[0], dg = d[i+1]-ref[1], db = d[i+2]-ref[2];
+    return dr*dr + dg*dg + db*db < tol2;
+  };
+  const push = (px, py) => {
+    const p = py * w + px;
+    if (mask[p] || !isBg(p * 4)) return;
+    mask[p] = 1; qx[tail] = px; qy[tail] = py; tail++;
+  };
+  for (let px = 0; px < w; px++){ push(px, 0); push(px, h-1); }
+  for (let py = 0; py < h; py++){ push(0, py); push(w-1, py); }
+  while (head < tail){
+    const cx = qx[head], cy = qy[head]; head++;
+    if (cx > 0) push(cx-1, cy);
+    if (cx < w-1) push(cx+1, cy);
+    if (cy > 0) push(cx, cy-1);
+    if (cy < h-1) push(cx, cy+1);
+  }
+  return mask;
+}
+
+/* Wall tone and noise from top corners. The reference tolerance is
+   scaled to the measured noise so JPEG grain and light texture stay
+   classified as background. */
+function cornerStats(d, w, h){
+  const cs = Math.max(4, Math.round(Math.min(w, h) * 0.06));
+  let r=0,g=0,b=0,n=0;
+  const vals = [];
+  const grab = (x0) => {
+    for (let yy = 0; yy < cs; yy++) for (let xx = x0; xx < x0+cs; xx++){
+      const i = (yy*w+xx)*4;
+      r += d[i]; g += d[i+1]; b += d[i+2]; n++;
+      vals.push(d[i], d[i+1], d[i+2]);
+    }
+  };
+  grab(0); grab(w - cs);
+  const ref = [r/n, g/n, b/n];
+  const mean = (r + g + b) / (n * 3);
+  let varSum = 0;
+  for (const v of vals) varSum += (v - mean) * (v - mean);
+  const std = Math.sqrt(varSum / vals.length);
+  const tRef = Math.min(34, Math.max(22, 4 * std));
+  return { ref, tRef };
+}
+
+/* Subject silhouette = person pixels (non-background) connected to the
+   bottom edge of the frame. Textured wall pockets the flood fill could
+   not reach are excluded, so the silhouette is the person only. */
+function subjectFromMask(mask, w, h){
+  const sub = new Uint8Array(w * h);
+  if (!qxBuf || qxBuf.length < w * h){ qxBuf = new Int32Array(w * h); qyBuf = new Int32Array(w * h); }
+  const qx = qxBuf, qy = qyBuf;
+  let head = 0, tail = 0;
+  const push = (px, py) => {
+    const p = py * w + px;
+    if (sub[p] || mask[p]) return;
+    sub[p] = 1; qx[tail] = px; qy[tail] = py; tail++;
+  };
+  for (let px = 0; px < w; px++) push(px, h - 1);
+  while (head < tail){
+    const cx = qx[head], cy = qy[head]; head++;
+    if (cx > 0) push(cx-1, cy);
+    if (cx < w-1) push(cx+1, cy);
+    if (cy > 0) push(cx, cy-1);
+    if (cy < h-1) push(cx, cy+1);
+  }
+  return sub;
+}
+
+/* ================= Compose frame ================= */
+function composeFrame(){
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  x.imageSmoothingQuality = 'high';
+  x.fillStyle = '#e8e4db';
+  x.fillRect(0,0,W,H);
+  x.drawImage(srcImg, view.x, view.y, srcImg.width * view.scale, srcImg.height * view.scale);
+  return c;
+}
+
+/* ================= Background flattening with head shield =================
+   A noise-scaled reference mask defines the subject silhouette. The
+   working mask is clipped against it, so the flattening can never
+   paint over hair or ears regardless of the chosen tolerance. */
+function flattenWithMask(x, mask){
+  const img = x.getImageData(0, 0, W, H);
+  const d = img.data;
+  const [nr, ng, nb] = chosenBg;
+  for (let py = 0; py < H; py++){
+    for (let px = 0; px < W; px++){
+      const p = py * W + px;
+      // feather via 3x3 mask average
+      let sum = 0, cnt = 0;
+      for (let oy = -1; oy <= 1; oy++){
+        const yy = py + oy; if (yy < 0 || yy >= H) continue;
+        for (let ox = -1; ox <= 1; ox++){
+          const xx = px + ox; if (xx < 0 || xx >= W) continue;
+          sum += mask[yy * W + xx]; cnt++;
+        }
+      }
+      const a = sum / cnt;
+      if (a <= 0) continue;
+      const i = p * 4;
+      d[i]   = d[i]   * (1-a) + nr * a;
+      d[i+1] = d[i+1] * (1-a) + ng * a;
+      d[i+2] = d[i+2] * (1-a) + nb * a;
+    }
+  }
+  x.putImageData(img, 0, 0);
+}
+
+/* ================= Guide overlay ================= */
+function drawGuides(x){
+  x.save();
+  x.lineWidth = 1;
+  x.fillStyle = 'rgba(0,194,168,.14)';
+  x.fillRect(0, CROWN_MIN, W, CROWN_MAX - CROWN_MIN);
+  x.fillRect(0, H - CHIN_MAX, W, CHIN_MAX - CHIN_MIN);
+  x.strokeStyle = 'rgba(0,150,130,.9)';
+  [CROWN_MIN, CROWN_MAX, H - CHIN_MAX, H - CHIN_MIN].forEach(y => {
+    x.beginPath(); x.moveTo(0, y + .5); x.lineTo(W, y + .5); x.stroke();
+  });
+  x.setLineDash([6,5]);
+  [W/2 - CENTER_TOL, W/2 + CENTER_TOL].forEach(gx => {
+    x.beginPath(); x.moveTo(gx + .5, 0); x.lineTo(gx + .5, H); x.stroke();
+  });
+  x.setLineDash([]);
+  x.font = '600 13px ui-monospace, monospace';
+  x.fillStyle = 'rgba(0,110,95,1)';
+  x.fillText('PÄÄLAKI TÄHÄN', 10, CROWN_MAX - 8);
+  x.fillText('LEUANKÄRKI TÄHÄN', 10, H - CHIN_MIN - 8);
+  x.restore();
+}
+
+/* ================= Stage sizing ================= */
+function fitStage(){
+  const maxW = Math.min(500, document.querySelector('.editor-wrap').clientWidth, window.innerWidth - 64);
+  dispScale = Math.min(1, maxW / W);
+  const dpr = window.devicePixelRatio || 1;
+  [stage, bgPrev].forEach(c => {
+    c.style.width = (W * dispScale) + 'px';
+    c.style.height = (H * dispScale) + 'px';
+    c.width = Math.round(W * dispScale * dpr);
+    c.height = Math.round(H * dispScale * dpr);
+    c.getContext('2d').setTransform(dispScale * dpr, 0, 0, dispScale * dpr, 0, 0);
+  });
+}
+window.addEventListener('resize', () => { if (srcImg){ fitStage(); renderAll(); }});
+
+/* ================= Render pipeline ================= */
+let renderTimer = null;
+function renderAll(){
+  if (!srcImg) return;
+  const frame = composeFrame();
+  sctx.clearRect(0,0,W,H);
+  sctx.drawImage(frame, 0, 0);
+  drawGuides(sctx);
+  clearTimeout(renderTimer);
+  renderTimer = setTimeout(heavyRender, 220);
+}
+
+function heavyRender(){
+  const frame = composeFrame();
+  const x = frame.getContext('2d');
+  const imgData = x.getImageData(0, 0, W, H);
+  const d = imgData.data;
+
+  // wall tone from the current crop's top corners
+  let r=0,g=0,b=0,n=0;
+  for (const [x0,x1] of [[0,40],[W-40,W]]){
+    for (let py = 0; py < 40; py++) for (let px = x0; px < x1; px++){
+      const i = (py*W+px)*4; r+=d[i]; g+=d[i+1]; b+=d[i+2]; n++;
+    }
+  }
+  bgColor = [r/n, g/n, b/n];
+  buildSwatches();
+
+  // Suitability: skin fraction inside the expected face ellipse of the
+  // current 500x653 framing, combined with the source-level gate metrics
+  {
+    let sk = 0, tot = 0;
+    for (let py = 155; py <= 445; py++){
+      for (let px = 145; px <= 355; px++){
+        const ex = (px - 250) / 105, ey = (py - 300) / 145;
+        if (ex*ex + ey*ey > 1) continue;
+        const i = (py * W + px) * 4;
+        const R = d[i], G = d[i+1], B = d[i+2];
+        tot++;
+        if (R > 95 && G > 40 && B > 20 && R > G && R > B &&
+            (R - Math.min(G, B)) > 15 && Math.abs(R - G) > 15) sk++;
+      }
+    }
+    updateVerdict(tot ? sk / tot : 0);
+  }
+
+  // Assess raw background evenness before deciding whether to touch it
+  rawBgStd = measureBgStd(d);
+  bgLevel = rawBgStd < 4 ? 'even' : (rawBgStd <= 14 ? 'ask' : 'bad');
+  const doFlatten = flattenOn && bgLevel !== 'even';
+  if (doFlatten){
+    if (autoTolOn){ tolerance = 50; $('tol').value = tolerance; }
+    const mask = floodMask(d, W, H, bgColor, tolerance);
+    flattenWithMask(x, mask);
+  }
+  lastFlattenApplied = doFlatten;
+  $('bgConfirmRow').hidden = !doFlatten;
+  $('tolVal').textContent = tolerance + (autoTolOn && flattenOn ? ' (oletus)' : '');
+  updateAssessBox();
+  updateLeakBox(doFlatten);
+
+  bctx.clearRect(0,0,W,H);
+  bctx.drawImage(frame, 0, 0);
+  runChecks(frame);
+  exportJpeg(frame);
+}
+
+/* Luma standard deviation over the border strips beside and above the
+   head — the same regions the final check uses. */
+function measureBgStd(d){
+  let bs = 0, bs2 = 0, bn = 0;
+  const strip = (x0, x1, y0, y1) => {
+    for (let py = y0; py < y1; py += 2) for (let px = x0; px < x1; px += 2){
+      const i = (py * W + px) * 4;
+      const l = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+      bs += l; bs2 += l * l; bn++;
+    }
+  };
+  strip(0, 60, 0, 260); strip(W-60, W, 0, 260); strip(0, W, 0, 40);
+  return Math.sqrt(Math.max(0, bs2/bn - (bs/bn)**2));
+}
+
+function updateVerdict(skinFrac){
+  const reasons = [];
+  let level = 'ok';
+  if (gateInfo.edgeFrac > 0.12){
+    level = 'bad';
+    reasons.push('taustassa on paljon yksityiskohtia — passikuva vaatii tasaisen, vaalean seinän');
+  }
+  if (skinFrac < 0.15 && cropInfo && cropInfo.mode !== 'error'){
+    level = 'bad';
+    reasons.push('kasvoja ei löydy kuvasta odotetusta kohdasta');
+  }
+  if (level !== 'bad'){
+    if (gateInfo.edgeFrac > 0.05){ level = 'warn'; reasons.push('taustassa on melko paljon yksityiskohtia'); }
+    if (cropInfo && cropInfo.mode !== 'silhouette'){ level = 'warn'; reasons.push('pään ääriviivoja ei tunnistettu luotettavasti'); }
+    if (skinFrac < 0.45){ level = 'warn'; reasons.push('kasvot eivät ehkä ole oikeassa kohdassa — tarkista rajaus'); }
+    if (gateInfo.reachTop < 0.35){ level = 'warn'; reasons.push('pään ympärillä on vain vähän yhtenäistä taustaa'); }
+  }
+  lastVerdict = { level, reasons };
+  const el = $('suitability');
+  el.className = 'verdict ' + level;
+  if (level === 'ok'){
+    el.textContent = 'Kuva soveltuu passikuvan pohjaksi.';
+  } else if (level === 'warn'){
+    el.innerHTML = 'Kuva voi soveltua, mutta tarkista huolella:<ul>' +
+      reasons.map(r => '<li>' + r + '</li>').join('') + '</ul>';
+  } else {
+    el.innerHTML = 'Tämä kuva ei sovellu passikuvaksi:<ul>' +
+      reasons.map(r => '<li>' + r + '</li>').join('') +
+      '</ul>Tarvitaan kasvokuva tasaista, vaaleaa seinää vasten — katso kuvausohjeet vaiheessa 1.';
+  }
+}
+
+function updateAssessBox(){
+  const el = $('bgAssess');
+  const v = rawBgStd.toFixed(1);
+  if (bgLevel === 'even'){
+    el.className = 'assess even';
+    el.textContent = 'Tausta on jo riittävän tasainen (mittaus ' + v + ') — kuvaa ei muokata lainkaan.';
+  } else if (bgLevel === 'ask'){
+    el.className = 'assess ask';
+    el.textContent = 'Taustassa on vaihtelua (mittaus ' + v + '). Haluatko tasata sen? Valitse alta.';
+  } else {
+    el.className = 'assess bad';
+    el.textContent = 'Tausta on hyvin epätasainen (mittaus ' + v + '). Ilman tasausta kuva ei todennäköisesti mene läpi.';
+  }
+  // Controls are meaningful only when there is something to flatten
+  ['bgToggle','autoTol','tol'].forEach(id => $(id).disabled = (bgLevel === 'even'));
+}
+
+function updateLeakBox(active){
+  const el = $('leakBox');
+  if (bgLevel === 'even'){
+    el.className = 'leakbox ok';
+    el.textContent = 'Tausta jätetään ennalleen.';
+    return;
+  }
+  if (!active){
+    el.className = 'leakbox ok';
+    el.textContent = 'Taustan tasaus on pois päältä — kuva viedään sellaisenaan.';
+    return;
+  }
+  el.className = 'leakbox warn';
+  el.textContent = 'Tarkista esikatselusta, ettei mitään peity — esimerkiksi korvat voivat jäädä tasauksen alle. Korjaa tarvittaessa pienentämällä herkkyyttä liukusäätimellä.';
+}
+
+/* ================= Swatches ================= */
+function buildSwatches(){
+  const sw = $('swatches');
+  const options = [
+    bgColor.map(Math.round),
+    [232, 232, 232],
+    [214, 219, 224],
+  ];
+  chosenBg = options[chosenIdx];
+  sw.innerHTML = '';
+  options.forEach((c, idx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'swatch' + (idx === chosenIdx ? ' sel' : '');
+    btn.style.background = `rgb(${c[0]},${c[1]},${c[2]})`;
+    btn.setAttribute('aria-label', idx === 0 ? 'Seinän oma sävy' : 'Vaihtoehtoinen sävy ' + idx);
+    btn.addEventListener('click', () => { chosenIdx = idx; $('bgConfirm').checked = false; buildSwatches(); heavyRender(); });
+    sw.appendChild(btn);
+  });
+}
+
+/* ================= Checks ================= */
+function runChecks(canvas){
+  const x = canvas.getContext('2d');
+  const d = x.getImageData(0, 0, W, H).data;
+
+  let lumaSum = 0;
+  const gray = new Float32Array(W * H);
+  for (let p = 0; p < W * H; p++){
+    const i = p * 4;
+    const l = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+    gray[p] = l; lumaSum += l;
+  }
+  const meanLuma = lumaSum / (W * H);
+
+  // Sharpness: Laplacian variance in the face region.
+  // Calibrated against an accepted real passport photo (scores ~60);
+  // a genuinely blurred photo scores under ~5.
+  let lapSum = 0, lapSq = 0, lapN = 0;
+  for (let py = 150; py < 520; py++){
+    for (let px = 120; px < 380; px++){
+      const p = py * W + px;
+      const lap = 4 * gray[p] - gray[p-1] - gray[p+1] - gray[p-W] - gray[p+W];
+      lapSum += lap; lapSq += lap * lap; lapN++;
+    }
+  }
+  const lapMean = lapSum / lapN;
+  const lapVar = lapSq / lapN - lapMean * lapMean;
+
+  let bs = 0, bs2 = 0, bn = 0;
+  const strip = (x0, x1, y0, y1) => {
+    for (let py = y0; py < y1; py += 2) for (let px = x0; px < x1; px += 2){
+      const l = gray[py * W + px]; bs += l; bs2 += l * l; bn++;
+    }
+  };
+  strip(0, 60, 0, 260); strip(W-60, W, 0, 260); strip(0, W, 0, 40);
+  const bgStd = Math.sqrt(Math.max(0, bs2/bn - (bs/bn)**2));
+  lastFinalBgStd = bgStd;
+
+  const effSrcW = W / view.scale;
+
+  const rows = [];
+  rows.push(['ok', 'Mitat ja tiedostomuoto', 'Tarkalleen 500 × 653 px, JPEG, alle 250 kt — työkalu takaa nämä aina.']);
+  rows.push([
+    effSrcW >= 400 ? 'ok' : (effSrcW >= 300 ? 'warn' : 'bad'),
+    'Lähdekuvan tarkkuus',
+    effSrcW >= 400
+      ? `Rajaus käyttää n. ${Math.round(effSrcW)} px lähdekuvaa — riittävä tarkkuus.`
+      : (effSrcW >= 300
+        ? `Rajaus käyttää n. ${Math.round(effSrcW)} px lähdekuvaa, joten kuvaa venytetään hieman. Tämä ei yleensä estä hyväksyntää, mutta terävämpään pääsee kuvaamalla kauempaa tai suuremmalla tarkkuudella.`
+        : `Rajaus käyttää vain n. ${Math.round(effSrcW)} px lähdekuvaa, joten kuvaa venytetään voimakkaasti. Ota kuva kauempaa tai käytä alkuperäistä, pakkaamatonta tiedostoa.`)
+  ]);
+  rows.push([
+    lapVar > 25 ? 'ok' : (lapVar > 8 ? 'warn' : 'bad'),
+    'Terävyys',
+    lapVar > 25 ? 'Kasvualue on terävä.' : (lapVar > 8 ? 'Terävyys on rajoilla — tarkista suurennettuna, ettei kuva ole pehmeä.' : 'Kuva vaikuttaa epätarkalta tai liikkuneelta.')
+  ]);
+  rows.push([
+    meanLuma >= 95 && meanLuma <= 205 ? 'ok' : 'warn',
+    'Valoisuus',
+    meanLuma >= 95 && meanLuma <= 205 ? 'Yleisvalotus on hyvällä alueella.' : (meanLuma < 95 ? 'Kuva on tumma — lisää valoa kasvoille.' : 'Kuva on hyvin vaalea — varo puhkipalamista.')
+  ]);
+  rows.push([
+    bgStd < 7 ? 'ok' : (bgStd <= 14 ? 'warn' : 'bad'),
+    'Taustan tasaisuus (lopullinen kuva)',
+    bgStd < 7 ? 'Tausta on tasainen.' : (bgStd <= 14 ? 'Taustassa on lievää vaihtelua — harkitse tasausta vaiheessa 3.' : 'Tausta on hyvin epätasainen — kuva ei todennäköisesti mene läpi. Tasaa tausta vaiheessa 3 tai vaihda kuvauspaikkaa.')
+  ]);
+
+  rows.push(['na', 'Silmämääräiset kohdat', 'Ilme, asento, lasit ja vyöhykkeisiin osuminen arvioidaan vaiheen 2 listalla kuvan vierestä.']);
+
+  const ul = $('autoChecks');
+  ul.innerHTML = '';
+  const names = {ok:'OK', warn:'HUOM', bad:'KORJAA', na:'ITSE'};
+  rows.forEach(([cls, title, msg]) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="badge ${cls}">${names[cls]}</span><span><strong>${title}.</strong> ${msg}</span>`;
+    ul.appendChild(li);
+  });
+}
+
+/* ================= Export ================= */
+function exportJpeg(canvas){
+  const tryQ = q => new Promise(res => canvas.toBlob(b => res(b), 'image/jpeg', q));
+  (async () => {
+    let blob = null;
+    for (const q of [0.95, 0.92, 0.88, 0.84, 0.78]){
+      blob = await tryQ(q);
+      if (blob && blob.size <= MAX_BYTES) break;
+    }
+    finalBlob = blob;
+    const url = URL.createObjectURL(blob);
+    const prev = $('finalPreview');
+    if (prev.dataset.url) URL.revokeObjectURL(prev.dataset.url);
+    prev.src = url; prev.dataset.url = url;
+    $('fileMeta').textContent = `500 × 653 px · JPEG · ${(blob.size/1024).toFixed(0)} kt / 250 kt`;
+    $('downloadBtn').disabled = false;
+  })();
+}
+$('downloadBtn').addEventListener('click', () => {
+  if (!finalBlob) return;
+  if (lastVerdict.level === 'bad'){
+    alert('Kuva ei sovellu passikuvaksi:\n\n' +
+      lastVerdict.reasons.map(r => '• ' + r).join('\n') +
+      '\n\nOta uusi kuva tasaista, vaaleaa seinää vasten (ohjeet vaiheessa 1).');
+    $('suitability').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  if (lastFlattenApplied && !$('bgConfirm').checked){
+    alert('Taustan tasaus on käytössä. Vahvista ensin vaiheessa 3 (valintaruutu), ettei mitään peity eikä pään ympärille jää outoa reunaa.');
+    $('bgConfirmRow').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  // Guard: visual checklist in step 2 must be acknowledged
+  const items = [
+    ['m0', 'Päälaki ja leuankärki osuvat vyöhykkeisiin'],
+    ['m1', 'Ilme neutraali'],
+    ['m2', 'Pää suorassa'],
+    ['m3', 'Ei silmälaseja tai heijastuksia, ei päähinettä'],
+    ['m4', 'Ei varjoja kasvoilla tai taustalla'],
+  ];
+  const missing = items.filter(([id]) => !$(id).checked).map(([, label]) => label);
+  if (lastFinalBgStd > 14){
+    const okBg = confirm(
+      'Lopullisen kuvan tausta on hyvin epätasainen — kuva ei todennäköisesti mene läpi poliisin arvioinnissa.\n\n' +
+      'Voit tasata taustan vaiheessa 3 tai ottaa uuden kuvan tasaisempaa seinää vasten.\n\nHaluatko silti ladata kuvan?'
+    );
+    if (!okBg) return;
+  }
+  if (missing.length){
+    const ok = confirm(
+      'Kaikkia silmämääräisiä tarkistuksia ei ole kuitattu vaiheessa 2:\n\n' +
+      missing.map(m => '• ' + m).join('\n') +
+      '\n\nNämä ovat yleisimpiä hylkäyssyitä, joita kone ei voi tarkistaa puolestasi. Haluatko silti ladata kuvan?'
+    );
+    if (!ok) return;
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(finalBlob);
+  a.download = 'passikuva.jpg';
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+/* ================= Fine-tune interaction ================= */
+function syncZoomSlider(){
+  const t = (view.scale - view.minScale) / (view.maxScale - view.minScale);
+  $('zoom').value = Math.round(t * 1000) / 10;
+}
+$('zoom').addEventListener('input', () => {
+  const t = $('zoom').value / 100;
+  zoomTo(view.minScale + t * (view.maxScale - view.minScale), W/2, H/2);
+});
+function clampView(){
+  const iw = srcImg.width * view.scale, ih = srcImg.height * view.scale;
+  if (iw >= W) view.x = Math.min(0, Math.max(W - iw, view.x));
+  else view.x = Math.min(W - iw/2, Math.max(-iw/2, view.x));
+  if (ih >= H) view.y = Math.min(0, Math.max(H - ih, view.y));
+  else view.y = Math.min(H - ih/2, Math.max(-ih/2, view.y));
+}
+function zoomTo(newScale, fx, fy){
+  newScale = Math.min(view.maxScale, Math.max(view.minScale, newScale));
+  const k = newScale / view.scale;
+  view.x = fx - (fx - view.x) * k;
+  view.y = fy - (fy - view.y) * k;
+  view.scale = newScale;
+  clampView(); syncZoomSlider(); renderAll();
+}
+function stagePoint(e){
+  const r = stage.getBoundingClientRect();
+  return [ (e.clientX - r.left) / dispScale, (e.clientY - r.top) / dispScale ];
+}
+let dragging = false, lastP = null, pointers = new Map(), pinchDist = 0;
+stage.addEventListener('pointerdown', e => {
+  stage.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, stagePoint(e));
+  if (pointers.size === 1){ dragging = true; lastP = stagePoint(e); stage.classList.add('grabbing'); }
+  if (pointers.size === 2){
+    const pts = [...pointers.values()];
+    pinchDist = Math.hypot(pts[0][0]-pts[1][0], pts[0][1]-pts[1][1]);
+  }
+});
+stage.addEventListener('pointermove', e => {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, stagePoint(e));
+  if (pointers.size === 2){
+    const pts = [...pointers.values()];
+    const dNew = Math.hypot(pts[0][0]-pts[1][0], pts[0][1]-pts[1][1]);
+    const cx = (pts[0][0]+pts[1][0])/2, cy = (pts[0][1]+pts[1][1])/2;
+    if (pinchDist > 0) zoomTo(view.scale * (dNew / pinchDist), cx, cy);
+    pinchDist = dNew;
+  } else if (dragging){
+    const p = stagePoint(e);
+    view.x += p[0] - lastP[0];
+    view.y += p[1] - lastP[1];
+    lastP = p;
+    clampView(); renderAll();
+  }
+});
+['pointerup','pointercancel','pointerleave'].forEach(ev => stage.addEventListener(ev, e => {
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinchDist = 0;
+  if (pointers.size === 0){ dragging = false; stage.classList.remove('grabbing'); }
+}));
+stage.addEventListener('wheel', e => {
+  e.preventDefault();
+  const [fx, fy] = stagePoint(e);
+  zoomTo(view.scale * (e.deltaY < 0 ? 1.06 : 1/1.06), fx, fy);
+}, {passive:false});
+
+/* ================= Background controls ================= */
+function resetBgConfirm(){ $('bgConfirm').checked = false; }
+$('bgToggle').addEventListener('change', () => { flattenOn = $('bgToggle').checked; resetBgConfirm(); heavyRender(); });
+$('autoTol').addEventListener('change', () => { autoTolOn = $('autoTol').checked; resetBgConfirm(); heavyRender(); });
+$('tol').addEventListener('change', () => {
+  tolerance = +$('tol').value;
+  autoTolOn = false;
+  $('autoTol').checked = false;
+  resetBgConfirm();
+  heavyRender();
+});
+
+})();
+</script>
+</body>
+</html>
