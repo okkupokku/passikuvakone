@@ -230,7 +230,7 @@
     <button type="button" data-lang="en">EN</button>
   </div>
   <div class="crest" aria-hidden="true">⚜</div>
-  <h1>Passikuvakone</h1>
+  <h1 data-i18n="hero.h1">Passikuvakone</h1>
   <p class="sub" data-i18n="hero.sub">Tee puhelimella otetusta kuvasta poliisin mittavaatimukset täyttävä passikuva. Rajaus tehdään puolestasi, sinun tehtäväksesi jää tarkistaa lopputulos.</p>
   <nav class="tabs">
     <button type="button" data-tab="tool" class="on" data-i18n="nav.tool">Työkalu</button>
@@ -508,6 +508,7 @@
 const I18N = {
 fi: {
   title: 'Passikuvakone: tee passikuva itse',
+  'hero.h1': 'Passikuvakone',
   'nav.tool': 'Työkalu', 'nav.docs': 'Dokumentaatio',
   'hero.sub': 'Tee puhelimella otetusta kuvasta poliisin mittavaatimukset täyttävä passikuva. Rajaus tehdään puolestasi, sinun tehtäväksesi jää tarkistaa lopputulos.',
   'intro.tag': 'Mikä tämä sivu on?', 'intro.h': 'Tee passikuva itse ilman valokuvaamoa',
@@ -630,6 +631,7 @@ fi: {
 },
 sv: {
   title: 'Passfotomaskinen: gör ditt passfoto själv',
+  'hero.h1': 'Passfotomaskinen',
   'nav.tool': 'Verktyg', 'nav.docs': 'Dokumentation',
   'hero.sub': 'Gör ett passfoto som uppfyller polisens måttkrav av en bild tagen med telefonen. Beskärningen görs åt dig, din uppgift är att granska resultatet.',
   'intro.tag': 'Vad är den här sidan?', 'intro.h': 'Gör passfotot själv utan fotoateljé',
@@ -752,14 +754,15 @@ sv: {
 },
 en: {
   title: 'Passport Photo Maker: make your own passport photo',
+  'hero.h1': 'Passport Photo Maker',
   'nav.tool': 'Tool', 'nav.docs': 'Documentation',
   'hero.sub': 'Turn a phone photo into a passport photo that meets the Finnish police measurement requirements. Cropping is done for you; your job is to review the result.',
   'intro.tag': 'What is this page?', 'intro.h': 'Make your passport photo yourself, no studio needed',
   'intro.lead': 'Renewing your passport or ID card? On this page you turn a photo you took yourself (or more precisely, one a friend took, since selfies are not accepted) into an official passport photo and upload it to the police server. This replaces a visit to a photographer. Just follow the steps below:',
   'intro.1': 'Take the photo according to the instructions (step 1)',
-  'intro.2': 'Load the photo into this tool',
+  'intro.2': 'Load the photo into the Passport Photo Maker',
   'intro.3': 'Check that the photo is cropped and edited correctly (steps 2–4)',
-  'intro.4': 'Download the finished photo to your own device',
+  'intro.4': 'Download the finished photo from the Passport Photo Maker to your own device',
   'intro.5': 'Upload the photo to the police server (link and instructions in step 5)',
   'intro.6': 'Done! You have completed the same steps as at a photo studio, but by yourself.',
   's1.tag': 'Step 1 / 5', 's1.h': 'Take the photo and load it',
@@ -878,10 +881,6 @@ let LANG = 'fi';
 {
   const h = (location.hash || '').replace('#','').toLowerCase();
   if (h in I18N) LANG = h;
-  else {
-    const nav = (navigator.language || 'fi').slice(0,2).toLowerCase();
-    if (nav in I18N) LANG = nav;
-  }
 }
 const t = k => (I18N[LANG] && I18N[LANG][k] !== undefined) ? I18N[LANG][k] : I18N.fi[k];
 
