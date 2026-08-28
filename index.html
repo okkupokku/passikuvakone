@@ -217,6 +217,11 @@
   }
   footer{text-align:center; padding:30px 16px 46px; color:var(--ink-soft); font-size:12.5px;}
   footer .mrz{color:rgba(58,28,40,.28); margin-top:14px;}
+  .src-link{
+    display:inline-block; margin-top:10px; color:var(--bordeaux); font-weight:600;
+    text-decoration:none; border-bottom:1px solid var(--gold);
+  }
+  .src-link:hover{color:var(--gold);}
   .dl-count{
     display:inline-block; margin:14px auto 4px; padding:8px 16px; border-radius:20px;
     background:#f3ecdd; border:1px solid var(--gold); color:var(--bordeaux);
@@ -503,6 +508,7 @@
   <span data-i18n="foot.1">Kuvaa ei lähetetä mihinkään, vaan kaikki käsittely tapahtuu omassa selaimessasi.</span><br>
   <span data-i18n="foot.2">Mitat: poliisin passikuvaohje (500 × 653 px, JPEG, ≤ 250 kt).</span><br>
   <div class="dl-count" id="dlCount" hidden></div>
+  <a class="src-link" href="https://github.com/okkupokku/passikuvakone" target="_blank" rel="noopener" data-i18n="foot.src">Lähdekoodi GitHubissa ↗</a><br>
   <span data-i18n="foot.3">Työkalu on epävirallinen apuväline: vastuu kuvan oikeellisuudesta on aina kuvan lataajalla, ja lopullisen arvion tekee poliisi.</span>
   <div class="mrz" aria-hidden="true">KASITTELY&lt;SELAIMESSA&lt;&lt;EI&lt;PALVELINTA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
 </footer>
@@ -616,6 +622,7 @@ fi: {
   'i.m0': 'Päälaki ja leuankärki osuvat vyöhykkeisiin', 'i.m1': 'Ilme neutraali', 'i.m2': 'Pää suorassa',
   'i.m3': 'Ei silmälaseja tai heijastuksia, ei päähinettä', 'i.m4': 'Ei varjoja kasvoilla tai taustalla',
   'count.label': n => 'Valmiita passikuvia ladattu tältä sivulta yhteensä: ' + n,
+  'foot.src': 'Lähdekoodi GitHubissa ↗',
   'foot.1': 'Kuvaa ei lähetetä mihinkään, vaan kaikki käsittely tapahtuu omassa selaimessasi.',
   'foot.2': 'Mitat: poliisin passikuvaohje (500 × 653 px, JPEG, ≤ 250 kt).',
   'foot.3': 'Työkalu on epävirallinen apuväline: vastuu kuvan oikeellisuudesta on aina kuvan lataajalla, ja lopullisen arvion tekee poliisi.',
@@ -741,6 +748,7 @@ sv: {
   'i.m0': 'Hjässan och hakspetsen träffar zonerna', 'i.m1': 'Neutralt ansiktsuttryck', 'i.m2': 'Huvudet rakt',
   'i.m3': 'Inga glasögon eller reflexer, ingen huvudbonad', 'i.m4': 'Inga skuggor i ansiktet eller på bakgrunden',
   'count.label': n => 'Färdiga passfoton nedladdade från den här sidan totalt: ' + n,
+  'foot.src': 'Källkoden på GitHub ↗',
   'foot.1': 'Bilden skickas ingenstans, all behandling sker i din egen webbläsare.',
   'foot.2': 'Mått: polisens passfotoanvisning (500 × 653 px, JPEG, ≤ 250 kB).',
   'foot.3': 'Verktyget är ett inofficiellt hjälpmedel: ansvaret för bildens riktighet ligger alltid hos den som laddar upp den, och den slutliga bedömningen görs av polisen.',
@@ -866,6 +874,7 @@ en: {
   'i.m0': 'Crown and chin tip land in the zones', 'i.m1': 'Neutral expression', 'i.m2': 'Head straight',
   'i.m3': 'No glasses or reflections, no headwear', 'i.m4': 'No shadows on the face or background',
   'count.label': n => 'Finished passport photos downloaded from this page in total: ' + n,
+  'foot.src': 'Source code on GitHub ↗',
   'foot.1': 'The photo is not sent anywhere; all processing happens in your own browser.',
   'foot.2': 'Dimensions: police passport photo specification (500 × 653 px, JPEG, ≤ 250 kB).',
   'foot.3': 'This tool is an unofficial aid: responsibility for the photo always lies with the person uploading it, and the final assessment is made by the police.',
