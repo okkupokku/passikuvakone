@@ -217,6 +217,11 @@
   }
   footer{text-align:center; padding:30px 16px 46px; color:var(--ink-soft); font-size:12.5px;}
   footer .mrz{color:rgba(58,28,40,.28); margin-top:14px;}
+  .dl-count{
+    display:inline-block; margin:14px auto 4px; padding:8px 16px; border-radius:20px;
+    background:#f3ecdd; border:1px solid var(--gold); color:var(--bordeaux);
+    font-weight:700; font-size:13px;
+  }
   @media (max-width:640px){ section.step{padding:20px 16px;} }
   @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} .btn{transition:none;} }
 </style>
@@ -483,6 +488,7 @@
       <li data-i18n="doc.sec.3">…</li>
       <li data-i18n="doc.sec.4">…</li>
       <li data-i18n="doc.sec.5">…</li>
+      <li data-i18n="doc.sec.6">…</li>
     </ul>
 
     <h3 class="doc-h" data-i18n="doc.resp.h">Vastuu</h3>
@@ -496,6 +502,7 @@
 <footer>
   <span data-i18n="foot.1">Kuvaa ei lähetetä mihinkään, vaan kaikki käsittely tapahtuu omassa selaimessasi.</span><br>
   <span data-i18n="foot.2">Mitat: poliisin passikuvaohje (500 × 653 px, JPEG, ≤ 250 kt).</span><br>
+  <div class="dl-count" id="dlCount" hidden></div>
   <span data-i18n="foot.3">Työkalu on epävirallinen apuväline: vastuu kuvan oikeellisuudesta on aina kuvan lataajalla, ja lopullisen arvion tekee poliisi.</span>
   <div class="mrz" aria-hidden="true">KASITTELY&lt;SELAIMESSA&lt;&lt;EI&lt;PALVELINTA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
 </footer>
@@ -608,6 +615,7 @@ fi: {
   'a.imgerr': 'Kuvan avaaminen epäonnistui. Kokeile JPEG- tai PNG-muotoa (HEIC pitää muuntaa ensin).',
   'i.m0': 'Päälaki ja leuankärki osuvat vyöhykkeisiin', 'i.m1': 'Ilme neutraali', 'i.m2': 'Pää suorassa',
   'i.m3': 'Ei silmälaseja tai heijastuksia, ei päähinettä', 'i.m4': 'Ei varjoja kasvoilla tai taustalla',
+  'count.label': n => 'Valmiita passikuvia ladattu tältä sivulta yhteensä: ' + n,
   'foot.1': 'Kuvaa ei lähetetä mihinkään, vaan kaikki käsittely tapahtuu omassa selaimessasi.',
   'foot.2': 'Mitat: poliisin passikuvaohje (500 × 653 px, JPEG, ≤ 250 kt).',
   'foot.3': 'Työkalu on epävirallinen apuväline: vastuu kuvan oikeellisuudesta on aina kuvan lataajalla, ja lopullisen arvion tekee poliisi.',
@@ -621,10 +629,11 @@ fi: {
   'doc.how.5': '<strong>Tallennus:</strong> tiedosto viedään tarkalleen oikeassa koossa ja muodossa, ja pakkauslaatu säädetään automaattisesti alle 250 kilotavun.',
   'doc.sec.h': 'Tietoturva ja yksityisyys',
   'doc.sec.1': '<strong>Kuva ei koskaan poistu laitteeltasi.</strong> Kaikki käsittely (rajaus, mittaukset, taustan tasaus ja tiedoston luonti) tapahtuu selaimesi muistissa JavaScriptillä.',
-  'doc.sec.2': '<strong>Mitään ei lähetetä millekään palvelimelle.</strong> Sivu ei tee verkkopyyntöjä kuvan lataamisen jälkeen. Voit halutessasi kokeilla: katkaise verkkoyhteys kuvan lataamisen jälkeen, ja työkalu toimii silti.',
+  'doc.sec.2': '<strong>Kuvaa tai sen osia ei lähetetä millekään palvelimelle.</strong> Ainoa verkkoliikenne on alla kuvattu nimetön latauslaskuri. Voit halutessasi kokeilla: katkaise verkkoyhteys kuvan lataamisen jälkeen, ja työkalu toimii silti; vain laskuri jää päivittymättä.',
   'doc.sec.3': '<strong>Mitään ei tallenneta.</strong> Sivu ei käytä evästeitä, analytiikkaa eikä selaimen pysyväistallennusta. Kun suljet välilehden, kuva ja kaikki käsittelytiedot katoavat muistista.',
   'doc.sec.4': '<strong>Ainoa syntyvä tiedosto</strong> on passikuva.jpg, jonka itse tallennat omalle laitteellesi latausnapista.',
   'doc.sec.5': '<strong>Läpinäkyvyys:</strong> koko sivu on yksi HTML-tiedosto, jonka voi tarkastaa selaimen "näytä sivun lähdekoodi" -toiminnolla. Poliisin palveluihin siirryt vain itse klikkaamalla sivun linkkejä.',
+  'doc.sec.6': '<strong>Poikkeus: latauslaskuri.</strong> Kun tallennat valmiin kuvan, sivu lähettää laskuripalveluun (abacus.jasoncameron.dev) nimettömän +1-viestin, jotta sivun alalaidassa voidaan näyttää latausten kokonaismäärä. Viesti ei sisällä kuvaa, sen osia eikä mitään henkilö- tai laitetietoja. Jos mainosesto tai palomuuri estää pyynnön, sivu toimii silti normaalisti.',
   'doc.resp.h': 'Vastuu',
   'doc.resp.1': 'Työkalu on epävirallinen eikä liity poliisiin tai muuhun viranomaiseen. Vastuu poliisille ladattavan kuvan oikeellisuudesta on aina kuvan lataajalla, ja lopullisen arvion kuvasta tekee poliisin virkailija hakemuksen käsittelyn yhteydessä.',
   'doc.resp.2': 'Huomaa, että poliisin passikuvaohje kieltää kuvan digitaalisen muokkaamisen. Taustan tasaus on muokkausta, ja sen käyttö on käyttäjän oma valinta ja vastuulla. Varminta on ottaa kuva suoraan tasaista seinää vasten ja käyttää työkalua vain rajaukseen ja tarkistuksiin.'
@@ -731,6 +740,7 @@ sv: {
   'a.imgerr': 'Bilden kunde inte öppnas. Prova JPEG- eller PNG-format (HEIC måste konverteras först).',
   'i.m0': 'Hjässan och hakspetsen träffar zonerna', 'i.m1': 'Neutralt ansiktsuttryck', 'i.m2': 'Huvudet rakt',
   'i.m3': 'Inga glasögon eller reflexer, ingen huvudbonad', 'i.m4': 'Inga skuggor i ansiktet eller på bakgrunden',
+  'count.label': n => 'Färdiga passfoton nedladdade från den här sidan totalt: ' + n,
   'foot.1': 'Bilden skickas ingenstans, all behandling sker i din egen webbläsare.',
   'foot.2': 'Mått: polisens passfotoanvisning (500 × 653 px, JPEG, ≤ 250 kB).',
   'foot.3': 'Verktyget är ett inofficiellt hjälpmedel: ansvaret för bildens riktighet ligger alltid hos den som laddar upp den, och den slutliga bedömningen görs av polisen.',
@@ -744,10 +754,11 @@ sv: {
   'doc.how.5': '<strong>Sparande:</strong> filen exporteras i exakt rätt storlek och format, och komprimeringen justeras automatiskt till under 250 kilobyte.',
   'doc.sec.h': 'Datasäkerhet och integritet',
   'doc.sec.1': '<strong>Bilden lämnar aldrig din enhet.</strong> All behandling (beskärning, mätningar, utjämning av bakgrunden och skapande av filen) sker i webbläsarens minne med JavaScript.',
-  'doc.sec.2': '<strong>Ingenting skickas till någon server.</strong> Sidan gör inga nätverksanrop efter att bilden laddats in. Du kan testa själv: koppla från nätet efter att du laddat in bilden, och verktyget fungerar ändå.',
+  'doc.sec.2': '<strong>Bilden eller delar av den skickas aldrig till någon server.</strong> Den enda nätverkstrafiken är den anonyma nedladdningsräknaren som beskrivs nedan. Du kan testa själv: koppla från nätet efter att du laddat in bilden, och verktyget fungerar ändå; bara räknaren uppdateras inte.',
   'doc.sec.3': '<strong>Ingenting sparas.</strong> Sidan använder inga kakor, ingen analys och ingen beständig lagring i webbläsaren. När du stänger fliken försvinner bilden och all behandlingsdata ur minnet.',
   'doc.sec.4': '<strong>Den enda fil som skapas</strong> är passikuva.jpg, som du själv sparar på din egen enhet med nedladdningsknappen.',
   'doc.sec.5': '<strong>Transparens:</strong> hela sidan är en enda HTML-fil som kan granskas med webbläsarens "visa sidkälla". Till polisens tjänster går du bara genom att själv klicka på sidans länkar.',
+  'doc.sec.6': '<strong>Undantag: nedladdningsräknaren.</strong> När du sparar den färdiga bilden skickar sidan ett anonymt +1-meddelande till räknartjänsten (abacus.jasoncameron.dev), så att det totala antalet nedladdningar kan visas längst ner på sidan. Meddelandet innehåller inte bilden, delar av den eller några person- eller enhetsuppgifter. Om en annonsblockerare eller brandvägg stoppar anropet fungerar sidan ändå normalt.',
   'doc.resp.h': 'Ansvar',
   'doc.resp.1': 'Verktyget är inofficiellt och har ingen koppling till polisen eller någon annan myndighet. Ansvaret för att bilden som laddas upp till polisen är korrekt ligger alltid hos den som laddar upp den, och den slutliga bedömningen görs av polisens tjänsteman i samband med ansökan.',
   'doc.resp.2': 'Observera att polisens passfotoanvisning förbjuder digital redigering av bilden. Utjämning av bakgrunden är redigering, och att använda den är användarens eget val och ansvar. Säkrast är att ta bilden direkt mot en jämn vägg och använda verktyget bara för beskärning och kontroller.'
@@ -854,6 +865,7 @@ en: {
   'a.imgerr': 'The image could not be opened. Try JPEG or PNG format (HEIC must be converted first).',
   'i.m0': 'Crown and chin tip land in the zones', 'i.m1': 'Neutral expression', 'i.m2': 'Head straight',
   'i.m3': 'No glasses or reflections, no headwear', 'i.m4': 'No shadows on the face or background',
+  'count.label': n => 'Finished passport photos downloaded from this page in total: ' + n,
   'foot.1': 'The photo is not sent anywhere; all processing happens in your own browser.',
   'foot.2': 'Dimensions: police passport photo specification (500 × 653 px, JPEG, ≤ 250 kB).',
   'foot.3': 'This tool is an unofficial aid: responsibility for the photo always lies with the person uploading it, and the final assessment is made by the police.',
@@ -867,10 +879,11 @@ en: {
   'doc.how.5': '<strong>Saving:</strong> the file is exported in exactly the right size and format, and the compression quality is adjusted automatically to stay under 250 kilobytes.',
   'doc.sec.h': 'Security and privacy',
   'doc.sec.1': '<strong>The photo never leaves your device.</strong> All processing (cropping, measurements, background evening and file creation) happens in your browser\'s memory using JavaScript.',
-  'doc.sec.2': '<strong>Nothing is sent to any server.</strong> The page makes no network requests after loading. You can test this yourself: disconnect from the network after loading the photo, and the tool still works.',
+  'doc.sec.2': '<strong>The photo, or any part of it, is never sent to any server.</strong> The only network traffic is the anonymous download counter described below. You can test this yourself: disconnect from the network after loading the photo, and the tool still works; only the counter goes un-updated.',
   'doc.sec.3': '<strong>Nothing is stored.</strong> The page uses no cookies, no analytics and no persistent browser storage. When you close the tab, the photo and all processing data disappear from memory.',
   'doc.sec.4': '<strong>The only file created</strong> is passikuva.jpg, which you save to your own device yourself using the download button.',
   'doc.sec.5': '<strong>Transparency:</strong> the whole page is a single HTML file that can be inspected with the browser\'s "view page source". You only go to police services by clicking the links on the page yourself.',
+  'doc.sec.6': '<strong>Exception: the download counter.</strong> When you save the finished photo, the page sends an anonymous +1 message to a counter service (abacus.jasoncameron.dev) so the total number of downloads can be shown at the bottom of the page. The message contains no image data, no parts of it, and no personal or device information. If an ad blocker or firewall blocks the request, the page still works normally.',
   'doc.resp.h': 'Responsibility',
   'doc.resp.1': 'The tool is unofficial and is not affiliated with the police or any other authority. Responsibility for the correctness of the photo uploaded to the police always lies with the person uploading it, and the final assessment is made by a police official when processing the application.',
   'doc.resp.2': 'Note that the police passport photo instructions forbid digital editing of the photo. Background evening is editing, and using it is the user\'s own choice and responsibility. The safest approach is to take the photo directly against a smooth wall and use the tool only for cropping and checks.'
@@ -895,7 +908,31 @@ function applyLang(){
   });
   document.querySelectorAll('.lang-switch button').forEach(b =>
     b.classList.toggle('on', b.dataset.lang === LANG));
+  if (typeof renderCount === 'function') renderCount();
 }
+
+/* ---- global download counter (Abacus, abacus.jasoncameron.dev) ----
+   Sends a single anonymous +1 when a photo is downloaded; contains no
+   image data or personal data. Change the namespace to your own domain
+   if you fork this page, so the counters don't collide. */
+const COUNTER_BASE = 'https://abacus.jasoncameron.dev';
+const COUNTER_NS = 'passikuvakone';
+const COUNTER_KEY = 'lataukset';
+let dlCount = null;
+function renderCount(){
+  const el = document.getElementById('dlCount');
+  if (!el) return;
+  if (dlCount === null){ el.hidden = true; return; }
+  el.hidden = false;
+  el.textContent = t('count.label')(dlCount);
+}
+function counterFetch(ep){
+  if (typeof fetch === 'undefined') return Promise.reject(new Error('no fetch'));
+  return fetch(COUNTER_BASE + '/' + ep + '/' + COUNTER_NS + '/' + COUNTER_KEY)
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(j => { if (j && typeof j.value === 'number'){ dlCount = j.value; renderCount(); } });
+}
+counterFetch('get').catch(() => {});
 
 document.querySelectorAll('.lang-switch button').forEach(b => {
   b.addEventListener('click', () => {
@@ -1606,6 +1643,7 @@ $('downloadBtn').addEventListener('click', () => {
   a.href = URL.createObjectURL(finalBlob);
   a.download = 'passikuva.jpg';
   document.body.appendChild(a); a.click(); a.remove();
+  counterFetch('hit').catch(() => {});
 });
 
 /* ================= Fine-tune interaction ================= */
